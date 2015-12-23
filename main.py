@@ -13,22 +13,25 @@ qiyuangong@gmail.com
 """
 
 import sys
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 
 class MainWindow(QtGui.QWidget):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.missing_window = MissingWindow(self)
         self.initUI()
 
     def initUI(self):
-        btn1 = QtGui.QPushButton(u'缺失数据匿名')
-        btn1.setFixedHeight(80)
+
         # btn1.resize(btn1.sizeHint())
         gridlayout = QtGui.QGridLayout()
         gridlayout.setSpacing(10)
         gridlayout.setMargin(10)
+        btn1 = QtGui.QPushButton(u'缺失数据匿名')
+        btn1.setFixedHeight(80)
+        self.connect(btn1, QtCore.SIGNAL('clicked()'), self.missing_window.show)
         gridlayout.addWidget(btn1, 0, 0)
         # btn1.move(50, 25)
         btn2 = QtGui.QPushButton(u'高维数据匿名', self)
@@ -52,10 +55,27 @@ class MainWindow(QtGui.QWidget):
         self.resize(600, 500)
         self.show()
 
+    def handleMissingButton(self):
+        self.missing_window.show()
+
+
+
+class MissingWindow(QtGui.QWidget):
+
+    def __init__(self, parent=None):
+        super(MissingWindow, self).__init__(parent)
+        self.initUI()
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
+    def initUI(self):
+        self.setWindowTitle(u'缺失数据匿名发布')
+        # self.setLayout(gridlayout)
+        self.resize(600, 500)
+
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    ex = MainWindow()
+    main_window = MainWindow()
     sys.exit(app.exec_())
 
 
