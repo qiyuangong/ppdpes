@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 import datetime
 from django.utils import timezone
+from jsonfield import JSONField
 
 
 class Data(models.Model):
@@ -43,33 +44,28 @@ class Anon_Task(models.Model):
     data = models.ForeignKey(Data, on_delete=models.CASCADE)
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
+    parameters = JSONField(null=True, blank=True)
     task_type = models.IntegerField(default=0)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField('Not finished Yet!')
 
-    def __str__(self):
-        key = self.data.data_text + self.anon_model.model_text +\
-              self.anon_algorithm.algorithm_text + self.anon_algorithm.parameter
-        return key
 
-    def __eq__(self, other):
-        if self == other:
-            return True
-        else:
-            return False
+class Anon_Result(models.Model):
+    task = models.ForeignKey(Anon_Task, on_delete=models.CASCADE)
+    anon_result = JSONField(null=True, blank=True)
 
 
-    def __hash__(self):
-        key = self.data.data_text + self.anon_model.model_text +\
-              self.anon_algorithm.algorithm_text + self.anon_algorithm.parameter
-        return hash(key)
+class Eval_Result(models.Model):
+    task = models.ForeignKey(Anon_Task, on_delete=models.CASCADE)
+    eval_result = JSONField(null=True, blank=True)
 
 
 class Anon_Data(models.Model):
     data = models.ForeignKey(Data, on_delete=models.CASCADE)
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     task = models.ForeignKey(Anon_Task, on_delete=models.CASCADE)
-    # pub_time = task.end_time
+    result = JSONField(null=True, blank=True)
 
     def __str__(self):
         return "Anonmized " + data.data_text
+
