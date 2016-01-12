@@ -52,7 +52,7 @@ class Anon_Task(models.Model):
     task_type = models.IntegerField(default=0)
     start_time = models.DateTimeField(default=timezone.now())
     result_set = models.IntegerField(default=-1)
-    end_time = models.Empty()
+    end_time = models.DateTimeField(default=timezone.now())
 
     def is_finished(self):
         return timezone.now() >= self.end_time
@@ -63,9 +63,12 @@ class Anon_Task(models.Model):
 
 class Anon_Result(models.Model):
     key = models.CharField(max_length=200)
+    data = models.ForeignKey(Data, on_delete=models.CASCADE)
+    anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
+    anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
     anon_result = JSONField(null=True, blank=True)
     start_time = models.DateTimeField(default=timezone.now())
-    end_time = models.Empty()
+    end_time = models.DateTimeField(default=timezone.now())
 
     @classmethod
     def create(cls, key):
@@ -80,9 +83,12 @@ class Anon_Result(models.Model):
 
 class Eval_Result(models.Model):
     key = models.CharField(max_length=200)
+    data = models.ForeignKey(Data, on_delete=models.CASCADE)
+    anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
+    anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
     eval_result = JSONField(null=True, blank=True)
     start_time = models.DateTimeField(default=timezone.now())
-    end_time = models.DateTimeField()
+    end_time = models.DateTimeField(default=timezone.now())
 
     @classmethod
     def create(cls, key):
@@ -95,16 +101,6 @@ class Eval_Result(models.Model):
         universe_anonymizer(['a', 'm', 'k'])
 
 
-class Anon_Data(models.Model):
-    data = models.ForeignKey(Data, on_delete=models.CASCADE)
-    anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
-    task = models.ForeignKey(Anon_Task, on_delete=models.CASCADE)
-    result = JSONField(null=True, blank=True)
-
-    def __str__(self):
-        return "Anonmized " + data.data_text
-
-
 @receiver(post_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
 def connect_PPDP_Kernel(sender, instance, **kwargs):
     key = ';'.join((instance.data.data_text,
@@ -114,12 +110,20 @@ def connect_PPDP_Kernel(sender, instance, **kwargs):
             anon_result = Anon_Result.objects.get(key=key)
         except Anon_Result.DoesNotExist:
             anon_result = Anon_Result.create(key)
+            anon_result.anon_algorithm = instance.anon_algorithm
+            anon_result.anon_model = instance.anon_model
+            anon_result.data = instance.data
             anon_result.save()
         instance.result_set = anon_result.id
+        instance.end_time = anon_result.end_time
     else:
         try:
             eval_result = Eval_Result.objects.get(key=key)
         except Eval_Result.DoesNotExist:
             eval_result = Eval_Result.create(key)
+            eval_result.anon_algorithm = instance.anon_algorithm
+            eval_result.anon_model = instance.anon_model
+            eval_result.data = instance.data
             eval_result.save()
         instance.result_set = eval_result.id
+        instance.end_time = eval_result.end_time

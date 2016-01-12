@@ -5,6 +5,11 @@
 <h2>Parameters: {{ task.parameters }}</h2>
 {% if task.is_finished%}
     <p>Finished</p>
+    {% if task.task_type > 0 %}
+        <li><a href="/PPDP/task/eval{{ task.result_set }}">Eval_Result</a></li>
+    {% else %}
+        <li><a href="/PPDP/task/anon{{ task.result_set }}">Anon_Result</a></li>
+    {% endif %}
 {% else %}
     <p>Not Finished</p>
 {% endif %}

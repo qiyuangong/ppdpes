@@ -2,7 +2,11 @@
 {% if task_list %}
     <ul>
     {% for task in task_list %}
-        <li><a href="/PPDP/task/{{ task.id }}">Anon_Task{{ task.id }}: {{ task.task_text }}</a></li>
+        {% if task.task_type > 0 %}
+            <li><a href="/PPDP/task/{{ task.id }}">Eval_Task{{ task.id }}: {{ task.task_text }}</a></li>
+        {% else %}
+            <li><a href="/PPDP/task/{{ task.id }}">Anon_Task{{ task.id }}: {{ task.task_text }}</a></li>
+        {% endif %}
     {% endfor %}
     </ul>
 {% else %}
