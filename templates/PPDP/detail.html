@@ -1,0 +1,10 @@
+<h1>Anon_Task{{ task.id }}: {{ task.task_text }}</h1>
+<h2>Data: {{task.data.data_text}}</h2>
+<h2>Model: {{task.anon_model.model_text}}</h2>
+<h2>Algorithm: {{ task.anon_algorithm.algorithm_text }}</h2>
+<h2>Parameters: {{ task.parameters }}</h2>
+{% if task.is_finished%}
+    <p>Finished</p>
+{% else %}
+    <p>Not Finished</p>
+{% endif %}
