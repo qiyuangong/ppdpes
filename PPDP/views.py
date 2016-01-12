@@ -17,20 +17,14 @@ def task_detail(request, task_id):
 
 
 def anon_detail(request, anon_result_id):
-    try:
-        anon_result = Anon_Result.objects.get(pk=anon_result_id)
-    except Anon_Result.DoesNotExist:
-        raise Http404("Anon_Result does not exist")
-    # return render(request, )
+    anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
+    return render(request, 'PPDP/anon_detail.html', {'anon_result': anon_result})
 
 
 def eval_detail(request, eval_result_id):
-    try:
-        eval_result = Eval_Result.objects.get(pk=eval_result_id)
-    except Eval_Result.DoesNotExist:
-        raise Http404("Eval_Result does not exist")
-    #
-    # return render(request,)
+    eval_result = get_object_or_404(Eval_Result, pk=eval_result_id)
+    return render(request, 'PPDP/eval_detail.html', {'eval_result': eval_result})
+
 
 def ncp_k_plot(request):
     return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
