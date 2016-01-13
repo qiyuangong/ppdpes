@@ -4,8 +4,9 @@ import datetime
 from django.utils import timezone
 from jsonfield import JSONField
 from ppdp_kernel.anonymizer import universe_anonymizer
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
+import json
 
 
 class Data(models.Model):
@@ -73,7 +74,7 @@ class Anon_Result(models.Model):
     @classmethod
     def create(cls, key):
         anon_re = cls(key=key)
-        anon_re.anon()
+        anon_re.anon_model = anon_re.anon()
         anon_re.end_time = timezone.now()
         return anon_re
 
@@ -93,15 +94,15 @@ class Eval_Result(models.Model):
     @classmethod
     def create(cls, key):
         eval_re = cls(key=key)
-        eval_re.eval()
+        eval_re.eval_result =  json.dumps(eval_re.eval())
         eval_re.end_time = timezone.now()
         return eval_re
 
     def eval(self):
-        universe_anonymizer(['a', 'm', 'k'])
+       return universe_anonymizer(['a', 'm', 'k'])
 
 
-@receiver(post_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
+@receiver(pre_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
 def connect_PPDP_Kernel(sender, instance, **kwargs):
     key = ';'.join((instance.data.data_text,
                    instance.anon_model.model_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
