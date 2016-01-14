@@ -2,4 +2,5 @@
 <h2>Data: {{eval_result.data.data_text}}</h2>
 <h2>Model: {{eval_result.anon_model.model_text}}</h2>
 <h2>Parameters: {{ eval_result.eval_result }}</h2>
-<img src={% url 'ncp_k' eval_result_id=eval_result.id %} />
+<img src="data:image/png;base64,{{ plot_result.ncp_k }}"/>
+<img src="data:image/png;base64,{{ plot_result.time_k }}"/>
