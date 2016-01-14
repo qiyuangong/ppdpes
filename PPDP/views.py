@@ -47,6 +47,7 @@ def eval_detail(request, eval_result_id):
 def cmp_multiple_result(xdata, ydatas, xname, yname, labels, yrange=range(0, 100, 10)):
     import matplotlib
     from django.http import HttpResponse
+    matplotlib.use('Agg')
     import random
     from matplotlib import pyplot as plt
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
