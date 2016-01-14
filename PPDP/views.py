@@ -37,27 +37,37 @@ def ncp_k_plot(request, eval_result_id):
     #                                                      [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
     #                            'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], range(0, 65, 5))
 
-def ncp_qi_plot(request):
+def ncp_qi_plot(request, eval_result_id):
+    eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
+    eval_result = json.loads(eval_re.eval_result)
     return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
                                                          [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
                                'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], 'semi_ncp_k', range(0, 65, 5))
 
-def ncp_size_plot(request):
+def ncp_size_plot(request, eval_result_id):
+    eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
+    eval_result = json.loads(eval_re.eval_result)
     return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
                                                          [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
                                'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], 'semi_ncp_k', range(0, 65, 5))
 
-def time_k_plot(request):
+def time_k_plot(request, eval_result_id):
+    eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
+    eval_result = json.loads(eval_re.eval_result)
     return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
                                                          [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
                                'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], range(0, 65, 5))
 
-def time_qi_plot(request):
+def time_qi_plot(request, eval_result_id):
+    eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
+    eval_result = json.loads(eval_re.eval_result)
     return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
                                                          [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
                                'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], 'semi_ncp_k', range(0, 65, 5))
 
-def time_size_plot(request):
+def time_size_plot(request, eval_result_id):
+    eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
+    eval_result = json.loads(eval_re.eval_result)
     return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
                                                          [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
                                'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], 'semi_ncp_k', range(0, 65, 5))
