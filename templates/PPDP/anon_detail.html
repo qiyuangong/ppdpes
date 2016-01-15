@@ -2,3 +2,4 @@
 <h2>Data: {{anon_result.data.data_text}}</h2>
 <h2>Model: {{anon_result.anon_model.model_text}}</h2>
 <h2>Parameters: {{ anon_result.anon_result }}</h2>
+<a href={% url 'file_download' anon_result.id%}>Download Anon_Data File</a>

@@ -74,12 +74,24 @@ class Anon_Result(models.Model):
     @classmethod
     def create(cls, key):
         anon_re = cls(key=key)
-        anon_re.anon_model = anon_re.anon()
+        anon_re.anon_result = json.dumps(anon_re.anon())
         anon_re.end_time = timezone.now()
         return anon_re
 
     def anon(self):
-        universe_anonymizer(['a', 'm'])
+        result, eval_r = universe_anonymizer(['a', 'm'])
+        anon_url = "tmp/" + str(self.key) + ".txt"
+        anon_r = dict()
+        anon_r['url'] = anon_url
+        anon_r['ncp'] = eval_r[0]
+        anon_r['time'] = eval_r[1]
+        anon_file = open(anon_url, 'w')
+        for record in result:
+            line = ';'.join(record) + '\n'
+            anon_file.write(line)
+        anon_file.close()
+        return anon_r
+
 
 
 class Eval_Result(models.Model):
@@ -104,9 +116,19 @@ class Eval_Result(models.Model):
 
 @receiver(pre_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
 def connect_PPDP_Kernel(sender, instance, **kwargs):
-    key = ';'.join((instance.data.data_text,
-                   instance.anon_model.model_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
+    key = ';'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
     if instance.task_type == 0:
+        anon_parameters = []
+        if "adult" in instance.data.data_text:
+            anon_parameters.append('a')
+        else:
+            anon_parameters.append('i')
+        if 'Mondrian' in instance.anon_algorithm.algorithm_text:
+            anon_parameters.append('m')
+        elif 'Semi' in instance.anon_algorithm.algorithm_text:
+            anon_parameters.append('s')
+        else:
+            anon_parameters.append('m')
         try:
             anon_result = Anon_Result.objects.get(key=key)
         except Anon_Result.DoesNotExist:

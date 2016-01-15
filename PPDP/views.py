@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 # from fig_plot import cmp_multiple_result
 import json
+from django.http import HttpResponse
 
 from .models import Anon_Task, Anon_Result, Eval_Result
 
@@ -18,7 +19,17 @@ def task_detail(request, task_id):
 
 def anon_detail(request, anon_result_id):
     anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
-    return render(request, 'PPDP/anon_detail.html', {'anon_result': anon_result})
+    return render(request, 'PPDP/anon_detail.html',
+                  {'anon_result': anon_result})
+
+
+def file_download(request, anon_result_id):
+    anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
+    temp = json.loads(anon_result.anon_result)
+    file_url = temp['url']
+    print anon_result.anon_result
+    with open(file_url) as file:
+        return HttpResponse(file.read())
 
 
 def eval_detail(request, eval_result_id):
