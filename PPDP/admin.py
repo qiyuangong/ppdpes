@@ -5,7 +5,9 @@ from .models import Anon_Task, Anon_Model, Anon_Algorithm, Data, Anon_Result, Ev
 # class Anon_TaskAdmin(admin.ModelAdmin):
 #     fields = []
 
+from kombu.transport.django import models as kombu_models
 
+admin.site.register(kombu_models.Message)
 admin.site.register(Data)
 admin.site.register(Anon_Model)
 admin.site.register(Anon_Algorithm)

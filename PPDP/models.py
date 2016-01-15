@@ -3,9 +3,12 @@ from django.db import models
 import datetime
 from django.utils import timezone
 from jsonfield import JSONField
-from ppdp_kernel.anonymizer import universe_anonymizer
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from tasks import eval, anon
+from ppdp_kernel.anonymizer import universe_anonymizer
+from celery import shared_task
+from django.db import transaction
 import json
 
 
@@ -72,26 +75,9 @@ class Anon_Result(models.Model):
     end_time = models.DateTimeField(default=timezone.now())
 
     @classmethod
-    def create(cls, key):
+    def create(cls, key, anon_parameters):
         anon_re = cls(key=key)
-        anon_re.anon_result = json.dumps(anon_re.anon())
-        anon_re.end_time = timezone.now()
         return anon_re
-
-    def anon(self):
-        result, eval_r = universe_anonymizer(['a', 'm'])
-        anon_url = "tmp/" + str(self.key) + ".txt"
-        anon_r = dict()
-        anon_r['url'] = anon_url
-        anon_r['ncp'] = eval_r[0]
-        anon_r['time'] = eval_r[1]
-        anon_file = open(anon_url, 'w')
-        for record in result:
-            line = ';'.join(record) + '\n'
-            anon_file.write(line)
-        anon_file.close()
-        return anon_r
-
 
 
 class Eval_Result(models.Model):
@@ -104,49 +90,49 @@ class Eval_Result(models.Model):
     end_time = models.DateTimeField(default=timezone.now())
 
     @classmethod
-    def create(cls, key):
+    def create(cls, key, eval_parameters):
         eval_re = cls(key=key)
-        eval_re.eval_result =  json.dumps(eval_re.eval())
-        eval_re.end_time = timezone.now()
         return eval_re
-
-    def eval(self):
-       return universe_anonymizer(['a', 'm', 'k'])
 
 
 @receiver(pre_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
 def connect_PPDP_Kernel(sender, instance, **kwargs):
     key = ';'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
+    basic_parameters = []
+    if "adult" in instance.data.data_text:
+        basic_parameters.append('a')
+    else:
+        basic_parameters.append('i')
+    if 'Mondrian' in instance.anon_algorithm.algorithm_text:
+        basic_parameters.append('m')
+    elif 'Semi' in instance.anon_algorithm.algorithm_text:
+        basic_parameters.append('s')
+    else:
+        basic_parameters.append('m')
     if instance.task_type == 0:
-        anon_parameters = []
-        if "adult" in instance.data.data_text:
-            anon_parameters.append('a')
-        else:
-            anon_parameters.append('i')
-        if 'Mondrian' in instance.anon_algorithm.algorithm_text:
-            anon_parameters.append('m')
-        elif 'Semi' in instance.anon_algorithm.algorithm_text:
-            anon_parameters.append('s')
-        else:
-            anon_parameters.append('m')
         try:
             anon_result = Anon_Result.objects.get(key=key)
         except Anon_Result.DoesNotExist:
-            anon_result = Anon_Result.create(key)
+            anon_result = Anon_Result.create(key, basic_parameters)
             anon_result.anon_algorithm = instance.anon_algorithm
             anon_result.anon_model = instance.anon_model
             anon_result.data = instance.data
             anon_result.save()
+            with transaction.atomic():
+                transaction.on_commit(lambda: anon.delay(anon_result, key, basic_parameters))
         instance.result_set = anon_result.id
         instance.end_time = anon_result.end_time
     else:
         try:
             eval_result = Eval_Result.objects.get(key=key)
         except Eval_Result.DoesNotExist:
-            eval_result = Eval_Result.create(key)
+            eval_result = Eval_Result.create(key, basic_parameters)
             eval_result.anon_algorithm = instance.anon_algorithm
             eval_result.anon_model = instance.anon_model
             eval_result.data = instance.data
             eval_result.save()
+            with transaction.atomic():
+                 transaction.on_commit(lambda: eval.delay(eval_result, basic_parameters + ['k']))
         instance.result_set = eval_result.id
         instance.end_time = eval_result.end_time
+

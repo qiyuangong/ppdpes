@@ -27,12 +27,25 @@ SECRET_KEY = 'f^cei#k_4fuvlseo@#emmwy&4j+gpr2crdyjdz((e-6geyu-zn'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+BROKER_URL = 'django://'
+
+from datetime import timedelta
+
+# CELERYBEAT_SCHEDULE = {
+#     'add-every-30-seconds': {
+#         'task': 'tasks.check',
+#         'schedule': timedelta(seconds=30),
+#     },
+# }
+
+CELERY_TIMEZONE = 'Asia/Shanghai'
 
 
 # Application definition
 
 # TODO app design
 INSTALLED_APPS = [
+    'kombu.transport.django',
     'PPDP.apps.PPDPConfig',
     'django.contrib.admin',
     'django.contrib.auth',

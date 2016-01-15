@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 import json
 from django.http import HttpResponse
 
-from .models import Anon_Task, Anon_Result, Eval_Result
+from models import Anon_Task, Anon_Result, Eval_Result
 
 
 def index(request):
@@ -19,8 +19,9 @@ def task_detail(request, task_id):
 
 def anon_detail(request, anon_result_id):
     anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
+    parameters = json.loads(anon_result.anon_result)
     return render(request, 'PPDP/anon_detail.html',
-                  {'anon_result': anon_result})
+                  {'anon_result': anon_result, 'parameters': parameters})
 
 
 def file_download(request, anon_result_id):
@@ -29,7 +30,11 @@ def file_download(request, anon_result_id):
     file_url = temp['url']
     print anon_result.anon_result
     with open(file_url) as file:
-        return HttpResponse(file.read())
+        response = HttpResponse(file.read())
+        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(file_url.split('/')[-1])
+        response['Content-Type'] = 'application/octet-stream'
+        file.close()
+        return response
 
 
 def eval_detail(request, eval_result_id):
