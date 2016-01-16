@@ -1,9 +1,25 @@
 from django.shortcuts import render, get_object_or_404
 # from fig_plot import cmp_multiple_result
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from models import Anon_Task, Anon_Result, Eval_Result
+from forms import add_task_form
+import pdb
+
+
+def add_task(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = add_task_form(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            form.save()
+            # pdb.set_trace()
+            return HttpResponseRedirect('/PPDP/') # Redirect after POST
+    else:
+        form = add_task_form()
+    return render(request, 'PPDP/add_task.html', {'form': form})
 
 
 def index(request):
