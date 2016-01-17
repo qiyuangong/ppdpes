@@ -45,6 +45,7 @@ CELERY_TIMEZONE = 'Asia/Shanghai'
 
 # TODO app design
 INSTALLED_APPS = [
+    'bootstrap3',
     'kombu.transport.django',
     'PPDP.apps.PPDPConfig',
     'django.contrib.admin',
@@ -117,7 +118,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
@@ -136,3 +136,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")]
+
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# BOOTSTRAP3 = {
+#     'include_jquery': False,
+#     'jquery_url': os.path.join(BASE_DIR, 'static/jquery.min.js'),
+#     'base_url':  os.path.join(BASE_DIR, 'static/bootstrap/'),
+#     'theme_url': os.path.join(BASE_DIR, 'static/bootstrap/css/dashboard.css'),
+#     'css_url':  os.path.join(BASE_DIR, 'static/bootstrap/css/bootstrap.min.css'),
+#     'javascript_url':  os.path.join(BASE_DIR, 'static/bootstrap/js/bootstrap.min.js'),
+# }
+# BOOTSTRAP_BASE_URL =  os.path.join(BASE_DIR, 'static/bootstrap/')
+# print BOOTSTRAP3
+# print BASE_DIR

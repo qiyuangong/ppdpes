@@ -1,15 +1,12 @@
 from __future__ import unicode_literals
 from django.db import models
-import datetime
 from django.utils import timezone
 from jsonfield import JSONField
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from tasks import eval, anon
-from ppdp_kernel.anonymizer import universe_anonymizer
-from celery import shared_task
 from django.db import transaction
-import json
+
 
 
 class Data(models.Model):
@@ -59,7 +56,7 @@ class Anon_Task(models.Model):
     end_time = models.DateTimeField(default=timezone.now())
 
     def is_finished(self):
-        return timezone.now() >= self.end_time
+        return self.end_time > self.start_time
 
     def __str__(self):
         return self.task_text
@@ -79,6 +76,9 @@ class Anon_Result(models.Model):
         anon_re = cls(key=key)
         return anon_re
 
+    def is_finished(self):
+        return self.end_time > self.start_time
+
 
 class Eval_Result(models.Model):
     key = models.CharField(max_length=200)
@@ -94,45 +94,47 @@ class Eval_Result(models.Model):
         eval_re = cls(key=key)
         return eval_re
 
+    def is_finished(self):
+        return self.end_time > self.start_time
 
-@receiver(pre_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
-def connect_PPDP_Kernel(sender, instance, **kwargs):
-    key = ';'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
-    basic_parameters = []
-    if "adult" in instance.data.data_text:
-        basic_parameters.append('a')
-    else:
-        basic_parameters.append('i')
-    if 'Mondrian' in instance.anon_algorithm.algorithm_text:
-        basic_parameters.append('m')
-    elif 'Semi' in instance.anon_algorithm.algorithm_text:
-        basic_parameters.append('s')
-    else:
-        basic_parameters.append('m')
-    if instance.task_type == 0:
-        try:
-            anon_result = Anon_Result.objects.get(key=key)
-        except Anon_Result.DoesNotExist:
-            anon_result = Anon_Result.create(key, basic_parameters)
-            anon_result.anon_algorithm = instance.anon_algorithm
-            anon_result.anon_model = instance.anon_model
-            anon_result.data = instance.data
-            anon_result.save()
-            with transaction.atomic():
-                transaction.on_commit(lambda: anon.delay(anon_result, key, basic_parameters))
-        instance.result_set = anon_result.id
-        instance.end_time = anon_result.end_time
-    else:
-        try:
-            eval_result = Eval_Result.objects.get(key=key)
-        except Eval_Result.DoesNotExist:
-            eval_result = Eval_Result.create(key, basic_parameters)
-            eval_result.anon_algorithm = instance.anon_algorithm
-            eval_result.anon_model = instance.anon_model
-            eval_result.data = instance.data
-            eval_result.save()
-            with transaction.atomic():
-                 transaction.on_commit(lambda: eval.delay(eval_result, basic_parameters + ['k']))
-        instance.result_set = eval_result.id
-        instance.end_time = eval_result.end_time
+
+@receiver(post_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
+def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
+    if kwargs['created']:
+        key = ';'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
+        basic_parameters = []
+        if "adult" in instance.data.data_text:
+            basic_parameters.append('a')
+        else:
+            basic_parameters.append('i')
+        if 'Mondrian' in instance.anon_algorithm.algorithm_text:
+            basic_parameters.append('m')
+        elif 'Semi' in instance.anon_algorithm.algorithm_text:
+            basic_parameters.append('s')
+        else:
+            basic_parameters.append('m')
+        if instance.task_type == 0:
+            try:
+                anon_result = Anon_Result.objects.get(key=key)
+            except Anon_Result.DoesNotExist:
+                anon_result = Anon_Result.create(key, basic_parameters)
+                anon_result.anon_algorithm = instance.anon_algorithm
+                anon_result.anon_model = instance.anon_model
+                anon_result.data = instance.data
+                anon_result.save()
+                with transaction.atomic():
+                    transaction.on_commit(lambda: anon.delay(instance, anon_result, key, basic_parameters))
+            instance.result_set = anon_result.id
+        else:
+            try:
+                eval_result = Eval_Result.objects.get(key=key)
+            except Eval_Result.DoesNotExist:
+                eval_result = Eval_Result.create(key, basic_parameters)
+                eval_result.anon_algorithm = instance.anon_algorithm
+                eval_result.anon_model = instance.anon_model
+                eval_result.data = instance.data
+                eval_result.save()
+                with transaction.atomic():
+                     transaction.on_commit(lambda: eval.delay(instance, eval_result, basic_parameters + ['k']))
+            instance.result_set = eval_result.id
 

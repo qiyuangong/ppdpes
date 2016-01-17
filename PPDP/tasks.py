@@ -5,17 +5,19 @@ import json
 import pdb
 
 @shared_task
-def eval(eval_result, eval_parameters):
+def eval(anon_task, eval_result, eval_parameters):
     result =  universe_anonymizer(eval_parameters)
     # eval_result = Eval_Result.objects.get(pk=eval_id)
     print eval_result
     eval_result.end_time = timezone.now()
+    anon_task.end_time =  eval_result.end_time
     eval_result.eval_result =  json.dumps(result)
     eval_result.save()
+    anon_task.save()
 
 
 @shared_task
-def anon(anon_result, key, anon_parameters):
+def anon(anon_task, anon_result, key, anon_parameters):
     result, eval_r = universe_anonymizer(anon_parameters)
     anon_url = "tmp/" + str(key) + ".txt"
     anon_r = dict()
@@ -33,4 +35,6 @@ def anon(anon_result, key, anon_parameters):
     # anon_result = Anon_Result.objects.get(pk=anon_id)
     anon_result.anon_result = json.dumps(anon_r)
     anon_result.end_time = timezone.now()
+    anon_task.end_time = anon_result.end_time
     anon_result.save()
+    anon_task.save()

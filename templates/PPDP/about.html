@@ -1,17 +1,13 @@
 {% include 'PPDP/head.html' %}
-
 <body>
     {% include 'PPDP/nav.html' %}
     <div class="container-fluid">
         <div class="row">
         {% include 'PPDP/sidebar.html' %}
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1>Add new task</h1>
-                <form name="form" method="post" class="form">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" Value="Submit">
-                </form>
+                <h1 class="page-header">Welcome to Southeast University PPDPES</h1>
+                <p>龚奇源</p>
+                <a href="Mailto:qiyuangong@gmail.com">qiyuangong@gmail.com</a>
             </div>
         </div>
     </div>

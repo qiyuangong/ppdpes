@@ -8,6 +8,20 @@ from forms import add_task_form
 import pdb
 
 
+def anon_index(request):
+    anon_list = Anon_Result.objects.iterator()
+    return render(request, 'PPDP/anon_index.html', {'anon_list': anon_list})
+
+
+def eval_index(request):
+    eval_list = Eval_Result.objects.iterator()
+    return render(request, 'PPDP/eval_index.html', {'eval_list': eval_list})
+
+
+def about(request):
+    return render(request, 'PPDP/about.html')
+
+
 def add_task(request):
     if request.method == 'POST': # If the form has been submitted...
         form = add_task_form(request.POST) # A form bound to the POST data
@@ -24,8 +38,7 @@ def add_task(request):
 
 def index(request):
     task_list = Anon_Task.objects.iterator()
-    context = {'task_list': task_list}
-    return render(request, 'PPDP/index.html', context)
+    return render(request, 'PPDP/index.html', {'task_list': task_list})
 
 
 def task_detail(request, task_id):
@@ -58,9 +71,9 @@ def eval_detail(request, eval_result_id):
     eval_result = json.loads(eval_re.eval_result)
     plot_result = dict()
     plot_result['ncp_k'] = cmp_multiple_result(eval_result[0], [eval_result[1]],
-                               'K', 'NCP (%)', ['Mondrian'], range(0, 65, 5))
+                               'K', 'NCP (%)', [str(eval_re.anon_algorithm.algorithm_text)], range(0, 65, 5))
     plot_result['time_k'] = cmp_multiple_result(eval_result[0], [eval_result[2]],
-                                                'K', 'Time (s)', ['Mondrian'])
+                                                'K', 'Time (s)', [str(eval_re.anon_algorithm.algorithm_text)])
     return render(request, 'PPDP/eval_detail.html', {'eval_result': eval_re, 'plot_result': plot_result})
 
 

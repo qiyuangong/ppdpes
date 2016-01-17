@@ -1,15 +1,51 @@
-<h1>Welcome to Southeast University PPDPES</h1>
-<a href={% url 'add_task'%}>Add new task</a>
-{% if task_list %}
-    <ul>
-    {% for task in task_list %}
-        {% if task.task_type > 0 %}
-            <li><a href="/PPDP/task/{{ task.id }}">Eval_Task{{ task.id }}: {{ task.task_text }}</a></li>
-        {% else %}
-            <li><a href="/PPDP/task/{{ task.id }}">Anon_Task{{ task.id }}: {{ task.task_text }}</a></li>
-        {% endif %}
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No Tasks are available.</p>
-{% endif %}
+{% include 'PPDP/head.html' %}
+<body>
+    {% include 'PPDP/nav.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'PPDP/sidebar.html' %}
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1 class="page-header">Welcome to Southeast University PPDPES</h1>
+                <a href={% url 'add_task'%}>Add new task</a>
+                <div class="table-responsive">
+                    {% if task_list %}
+                    <table class="table table-striped">
+                        <h2>Current Tasks:</h2>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>DataSet</th>
+                                <th>Model</th>
+                                <th>Algorithm</th>
+                                <th>Start_Time</th>
+                                <th>Finished</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in task_list %}
+                                <tr>
+                                    {% if task.task_type > 0 %}
+                                        <td><a href="/PPDP/task/{{ task.id }}">{{ task.id }}: {{ task.task_text }}</a></td>
+                                        <td>Eval_Task</td>
+                                    {% else %}
+                                        <td><a href="/PPDP/task/{{ task.id }}">{{ task.id }}: {{ task.task_text }}</a></td>
+                                        <td>Anon_Task</td>
+                                    {% endif %}
+                                    <td>{{ task.data.data_text }}</td>
+                                    <td>{{ task.anon_model.model_text }}</td>
+                                    <td>{{ task.anon_algorithm.algorithm_text }}</td>
+                                    <td>{{ task.start_time }}</td>
+                                    <td>{{ task.is_finished }}</td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <h2>No Tasks are available.</h2>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

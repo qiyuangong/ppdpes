@@ -1,0 +1,51 @@
+{% include 'PPDP/head.html' %}
+<body>
+    {% include 'PPDP/nav.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'PPDP/sidebar.html' %}
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1 class="page-header">Welcome to Southeast University PPDPES</h1>
+                <a href={% url 'add_task'%}>Add new task</a>
+                <div class="table-responsive">
+                    {% if anon_list %}
+                    <table class="table table-striped">
+                        <h2>Current Anon Tasks:</h2>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>DataSet</th>
+                                <th>Model</th>
+                                <th>Algorithm</th>
+                                <th>Start Time</th>
+                                <th>NCP</th>
+                                <th>Running Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for anon_reslut in anon_list %}
+                                <tr>
+                                    <td><a href={% url 'anon_detail' anon_reslut.id %}>{{ anon_reslut.id }}: {{ anon_reslut.key }}</a></td>>
+                                    <td>{{ anon_reslut.data.data_text }}</td>
+                                    <td>{{ anon_reslut.anon_model.model_text }}</td>
+                                    <td>{{ anon_reslut.anon_algorithm.algorithm_text }}</td>
+                                    <td>{{ anon_reslut.start_time }}</td>
+                                    {% if anon_reslut.is_finished %}
+                                        <td>{{ anon_reslut.parameters.ncp }}</td>
+                                        <td>{{ anon_reslut.parameters.time }}</td>
+                                    {% else %}
+                                        <td>--</td>
+                                        <td>--</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <h2>No Anon Tasks are available.</h2>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
