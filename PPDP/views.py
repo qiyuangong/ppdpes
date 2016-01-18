@@ -3,24 +3,28 @@ from django.shortcuts import render, get_object_or_404
 import json
 from django.http import HttpResponse, HttpResponseRedirect
 
-from models import Anon_Task, Anon_Result, Eval_Result
-from forms import add_task_form
+from models import Anon_Task, Anon_Result, Eval_Result, Data
+from forms import add_task_form, add_data_form, UploadFileForm
 from django.contrib.auth.decorators import login_required
 import pdb
+
 
 @login_required
 def anon_index(request):
     anon_list = Anon_Result.objects.iterator()
     return render(request, 'PPDP/anon_index.html', {'anon_list': anon_list})
 
+
 @login_required
 def eval_index(request):
     eval_list = Eval_Result.objects.iterator()
     return render(request, 'PPDP/eval_index.html', {'eval_list': eval_list})
 
+
 @login_required
 def about(request):
     return render(request, 'PPDP/about.html')
+
 
 @login_required
 def add_task(request):
@@ -36,15 +40,32 @@ def add_task(request):
         form = add_task_form()
     return render(request, 'PPDP/add_task.html', {'form': form})
 
+
+@login_required
+def add_data(request):
+    if request.method == 'POST': # If the form has been submitted...
+        form = add_data_form(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            form.save()
+            # pdb.set_trace()
+            return HttpResponseRedirect('/PPDP/') # Redirect after POST
+    else:
+        form = add_data_form()
+    return render(request, 'PPDP/add_data.html', {'form': form})
+
 @login_required
 def index(request):
     task_list = Anon_Task.objects.iterator()
     return render(request, 'PPDP/index.html', {'task_list': task_list})
 
+
 @login_required
 def task_detail(request, task_id):
     task = get_object_or_404(Anon_Task, pk=task_id)
     return render(request, 'PPDP/detail.html', {'task': task})
+
 
 @login_required
 def anon_detail(request, anon_result_id):
@@ -52,6 +73,25 @@ def anon_detail(request, anon_result_id):
     parameters = json.loads(anon_result.anon_result)
     return render(request, 'PPDP/anon_detail.html',
                   {'anon_result': anon_result, 'parameters': parameters})
+
+
+@login_required
+def file_upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = request.POST['title']
+            handle_uploaded_file(request.FILES['file_content'], title)
+
+            data = Data.create(title, "tmp/" + str(title) + ".txt", request.POST['sa_index'],
+                        request.POST['is_missing'], request.POST['is_high'], request.POST['is_rt'])
+            data.save()
+            return HttpResponseRedirect('/PPDP/')
+    else:
+        form = UploadFileForm()
+    return render(request, 'PPDP/upload.html', {'form': form})
+
+
 
 @login_required
 def file_download(request, anon_result_id):
@@ -88,6 +128,13 @@ def eval_detail(request, eval_result_id):
 #     # return cmp_multiple_result([2, 5, 10, 25, 50, 100], [[7.51, 19.62, 28.52, 36.64, 45.2, 51.14],
 #     #                                                      [3.18, 7.74, 12.86, 22.37, 31.4, 41.99]],
 #     #                            'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], range(0, 65, 5))
+
+
+def handle_uploaded_file(read_file, title='test'):
+    with open("tmp/" + str(title) + ".txt", 'w') as destination:
+        for chunk in read_file.chunks():
+            destination.write(chunk)
+    destination.close()
 
 
 def cmp_multiple_result(xdata, ydatas, xname, yname, labels, yrange=range(0, 100, 10)):

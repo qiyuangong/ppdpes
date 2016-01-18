@@ -22,6 +22,12 @@ class Data(models.Model):
     def __str__(self):
         return self.data_text
 
+    @classmethod
+    def create(cls, title, url, sa_index, is_missing, is_high, is_rt):
+        data = cls(data_text=title, data_url=url, sa_index=sa_index, is_missing=is_missing,
+                    is_high=is_high,is_rt=is_rt)
+        return data
+
 
 class Anon_Model(models.Model):
     model_text = models.CharField(max_length=200)

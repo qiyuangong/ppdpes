@@ -21,6 +21,25 @@ class add_task_form(forms.ModelForm):
         fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'task_type']
 
 
+class add_data_form(forms.ModelForm):
+
+    class Meta:
+        model = Data
+        fields = ['data_text', 'size', 'sa_index', 'is_missing', 'is_high', 'is_rt']
+
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    sa_index = forms.IntegerField(initial=-1)
+    is_missing = forms.IntegerField(initial=0)
+    is_high = forms.IntegerField(initial=0)
+    is_rt = forms.IntegerField(initial=0)
+    file_content = forms.FileField()
+
+    def is_valid(self):
+        return True
+
+
 class old_task_form(forms.Form):
     task_cat = forms.ChoiceField(label='选择演示任务', choices=TASK_CAT)
     task_type = forms.ChoiceField(label='选择任务类型', choices=TASK_TYPE)

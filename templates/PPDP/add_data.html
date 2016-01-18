@@ -1,0 +1,18 @@
+{% include 'PPDP/head.html' %}
+
+<body>
+    {% include 'PPDP/nav.html' %}
+    <div class="container-fluid">
+        <div class="row">
+        {% include 'PPDP/sidebar.html' %}
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1>Add new data</h1>
+                <form name="form" method="post" class="form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" Value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

@@ -3,11 +3,11 @@
 {% block title %}{{ title }} | {{ site_title|default:_('PPDP') }}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">Soueast University PPDPES</a></h1>
+<h1 id="site-name"><a href="{% url 'main_index' %}">Southeast University PPDPES</a></h1>
 {% endblock %}
 {% load i18n %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></div>{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'main_index' %}">{% trans 'Home' %}</a></div>{% endblock %}
 
 {% block content %}
 
