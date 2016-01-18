@@ -1,5 +1,5 @@
 from celery import shared_task
-from ppdp_kernel.anonymizer import universe_anonymizer
+from ppdpes_core.anonymizer import universe_anonymizer
 from django.utils import timezone
 import json
 import pdb
