@@ -16,9 +16,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.http import HttpResponseRedirect
+from django.contrib.auth import views as djviews
 
-# TODO url design
+
 urlpatterns = [
+    url(r'^$', lambda r: HttpResponseRedirect('PPDP/'), name='main_index'),
+    url(r'^accounts/profile/$', lambda r: HttpResponseRedirect('/'), name='account_detail'),
+    url(r'^login/$', djviews.login, name='login'),
+    url(r'^logout/$', djviews.logout, name='logout'),
     url(r'^PPDP/', include('PPDP.urls')),
     url(r'^admin/', admin.site.urls),
 ]

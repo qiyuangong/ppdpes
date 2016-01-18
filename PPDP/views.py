@@ -5,23 +5,24 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from models import Anon_Task, Anon_Result, Eval_Result
 from forms import add_task_form
+from django.contrib.auth.decorators import login_required
 import pdb
 
-
+@login_required
 def anon_index(request):
     anon_list = Anon_Result.objects.iterator()
     return render(request, 'PPDP/anon_index.html', {'anon_list': anon_list})
 
-
+@login_required
 def eval_index(request):
     eval_list = Eval_Result.objects.iterator()
     return render(request, 'PPDP/eval_index.html', {'eval_list': eval_list})
 
-
+@login_required
 def about(request):
     return render(request, 'PPDP/about.html')
 
-
+@login_required
 def add_task(request):
     if request.method == 'POST': # If the form has been submitted...
         form = add_task_form(request.POST) # A form bound to the POST data
@@ -35,24 +36,24 @@ def add_task(request):
         form = add_task_form()
     return render(request, 'PPDP/add_task.html', {'form': form})
 
-
+@login_required
 def index(request):
     task_list = Anon_Task.objects.iterator()
     return render(request, 'PPDP/index.html', {'task_list': task_list})
 
-
+@login_required
 def task_detail(request, task_id):
     task = get_object_or_404(Anon_Task, pk=task_id)
     return render(request, 'PPDP/detail.html', {'task': task})
 
-
+@login_required
 def anon_detail(request, anon_result_id):
     anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
     parameters = json.loads(anon_result.anon_result)
     return render(request, 'PPDP/anon_detail.html',
                   {'anon_result': anon_result, 'parameters': parameters})
 
-
+@login_required
 def file_download(request, anon_result_id):
     anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
     temp = json.loads(anon_result.anon_result)
@@ -65,7 +66,7 @@ def file_download(request, anon_result_id):
         file.close()
         return response
 
-
+@login_required
 def eval_detail(request, eval_result_id):
     eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
     eval_result = json.loads(eval_re.eval_result)
