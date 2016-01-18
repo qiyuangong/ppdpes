@@ -119,28 +119,36 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
             basic_parameters.append('s')
         else:
             basic_parameters.append('m')
+        flag = True
         if instance.task_type == 0:
             try:
                 anon_result = Anon_Result.objects.get(key=key)
+                instance.end_time = timezone.now()
+                flag = False
             except Anon_Result.DoesNotExist:
                 anon_result = Anon_Result.create(key, basic_parameters)
                 anon_result.anon_algorithm = instance.anon_algorithm
                 anon_result.anon_model = instance.anon_model
                 anon_result.data = instance.data
                 anon_result.save()
-                with transaction.atomic():
-                    transaction.on_commit(lambda: anon.delay(instance, anon_result, key, basic_parameters))
             instance.result_set = anon_result.id
         else:
             try:
                 eval_result = Eval_Result.objects.get(key=key)
+                instance.end_time = timezone.now()
+                flag = False
             except Eval_Result.DoesNotExist:
                 eval_result = Eval_Result.create(key, basic_parameters)
                 eval_result.anon_algorithm = instance.anon_algorithm
                 eval_result.anon_model = instance.anon_model
                 eval_result.data = instance.data
                 eval_result.save()
-                with transaction.atomic():
-                     transaction.on_commit(lambda: eval.delay(instance, eval_result, basic_parameters + ['k']))
             instance.result_set = eval_result.id
+        instance.save()
+        if flag:
+            with transaction.atomic():
+                if instance.task_type == 0:
+                    transaction.on_commit(lambda: anon.delay(instance, anon_result, key, basic_parameters))
+                else:
+                     transaction.on_commit(lambda: eval.delay(instance, eval_result, basic_parameters + ['k']))
 

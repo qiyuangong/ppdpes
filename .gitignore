@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 .idea
 tmp/*.txt
+tmp/*.pickle
 *.pickle
 # C extensions
 *.so
