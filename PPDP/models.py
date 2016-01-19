@@ -7,6 +7,10 @@ from django.dispatch import receiver
 from tasks import eval, anon
 from django.db import transaction
 
+TASK_TYPE = [
+    (0, 'Anon_Task'),
+    (1, 'Eval_Task'),
+]
 
 
 class Data(models.Model):
@@ -41,7 +45,7 @@ class Anon_Model(models.Model):
 class Anon_Algorithm(models.Model):
     algorithm_text = models.CharField(max_length=200)
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
-    parameter = models.CharField(max_length=200)
+    parameter = models.CharField(max_length=200, blank=True, default='')
     is_missing = models.IntegerField(default=0)
     is_high = models.IntegerField(default=0)
     is_rt = models.IntegerField(default=0)
@@ -55,11 +59,11 @@ class Anon_Task(models.Model):
     data = models.ForeignKey(Data, on_delete=models.CASCADE)
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
-    parameters = JSONField(null=True, blank=True)
-    task_type = models.IntegerField(default=0)
-    start_time = models.DateTimeField(default=timezone.now())
+    parameters = JSONField(null=True, blank=True, default='')
+    task_type = models.IntegerField(default=0, choices=TASK_TYPE)
+    start_time = models.DateTimeField(default=timezone.now)
     result_set = models.IntegerField(default=-1)
-    end_time = models.DateTimeField(default=timezone.now())
+    end_time = models.DateTimeField(default=timezone.now)
 
     def is_finished(self):
         return self.end_time > self.start_time
@@ -74,8 +78,8 @@ class Anon_Result(models.Model):
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
     anon_result = JSONField(null=True, blank=True)
-    start_time = models.DateTimeField(default=timezone.now())
-    end_time = models.DateTimeField(default=timezone.now())
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=timezone.now)
 
     @classmethod
     def create(cls, key, anon_parameters):
@@ -92,8 +96,8 @@ class Eval_Result(models.Model):
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
     eval_result = JSONField(null=True, blank=True)
-    start_time = models.DateTimeField(default=timezone.now())
-    end_time = models.DateTimeField(default=timezone.now())
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=timezone.now)
 
     @classmethod
     def create(cls, key, eval_parameters):

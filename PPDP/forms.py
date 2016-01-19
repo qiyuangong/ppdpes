@@ -8,17 +8,17 @@ TASK_CAT = (
     ('3', '复杂关系'),
 )
 
-TASK_TYPE = (
-    ('1', '匿名'),
-    ('2', '评估'),
-)
+TASK_TYPE = [
+    (0, 'Anon_Task'),
+    (1, 'Eval_Task'),
+]
 
 class add_task_form(forms.ModelForm):
     task_cat = forms.ChoiceField(label='选择演示任务', choices=TASK_CAT)
 
     class Meta:
         model = Anon_Task
-        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'task_type']
+        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'parameters', 'task_type']
 
 
 class add_data_form(forms.ModelForm):
