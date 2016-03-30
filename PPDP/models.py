@@ -150,6 +150,7 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
             instance.result_set = eval_result.id
         instance.save()
         if flag:
+            #TODO atomic and django models
             with transaction.atomic():
                 if instance.task_type == 0:
                     transaction.on_commit(lambda: anon.delay(instance, anon_result, key, basic_parameters))

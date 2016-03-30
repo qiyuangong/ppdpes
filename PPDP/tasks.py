@@ -4,6 +4,8 @@ from django.utils import timezone
 import json
 import pdb
 
+
+#TODO remove django
 @shared_task
 def eval(anon_task, eval_result, eval_parameters):
     result =  universe_anonymizer(eval_parameters)

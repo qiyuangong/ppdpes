@@ -27,7 +27,7 @@ SECRET_KEY = 'f^cei#k_4fuvlseo@#emmwy&4j+gpr2crdyjdz((e-6geyu-zn'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-BROKER_URL = 'django://'
+BROKER_URL = 'amqp://jssec:ibmc51@localhost//'
 
 from datetime import timedelta
 
