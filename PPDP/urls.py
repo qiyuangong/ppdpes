@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^eval_index$', views.eval_index, name='eval_index'),
     url(r'^add_task$', views.add_task, name='add_task'),
     url(r'^add_data$', views.add_data, name='add_data'),
+    url(r'^task_update', views.task_update, name='task_update'),
     url(r'^task/(?P<task_id>[0-9]+)$', views.task_detail, name='detail'),
     url(r'^anon(?P<anon_result_id>[0-9]+)$', views.anon_detail, name='anon_detail'),
     url(r'^eval(?P<eval_result_id>[0-9]+)$', views.eval_detail, name='eval_detail'),

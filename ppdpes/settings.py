@@ -43,7 +43,7 @@ CELERY_TIMEZONE = 'Asia/Shanghai'
 
 # Application definition
 
-# TODO app design
+
 INSTALLED_APPS = [
     'bootstrap3',
     'kombu.transport.django',

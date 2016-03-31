@@ -2,11 +2,35 @@ from django.shortcuts import render, get_object_or_404
 # from fig_plot import cmp_multiple_result
 import json
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils import timezone
 
 from models import Anon_Task, Anon_Result, Eval_Result, Data
 from forms import add_task_form, add_data_form, UploadFileForm
 from django.contrib.auth.decorators import login_required
 import pdb
+
+
+def task_update(request):
+    task_id = request.GET['task_id']
+    # end_time = request.GET['end_time']
+    r_result = request.GET['result']
+    anon_task = get_object_or_404(Anon_Task, pk=task_id)
+    anon_task.end_time = timezone.now()
+    if anon_task.task_type == 0:
+        anon_id = anon_task.result_set
+        anon_result = get_object_or_404(Anon_Result, pk=anon_id)
+        anon_result.anon_result = r_result
+        anon_result.end_time = anon_task.end_time
+        anon_result.save()
+    else:
+        eval_id = anon_task.result_set
+        eval_result = get_object_or_404(Eval_Result, pk=eval_id)
+        eval_result.eval_result = r_result
+        eval_result.end_time = anon_task.end_time
+        eval_result.save()
+    anon_task.save()
+    response = {'status': 'success', 'retval': 'OK'}
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 
 @login_required
