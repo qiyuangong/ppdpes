@@ -111,7 +111,7 @@ class Eval_Result(models.Model):
 @receiver(post_save, sender=Anon_Task, dispatch_uid="connect to ppdp_kernel")
 def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
     if kwargs['created']:
-        key = ';'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
+        key = '-'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
         basic_parameters = []
         if "adult" in instance.data.data_text:
             basic_parameters.append('a')

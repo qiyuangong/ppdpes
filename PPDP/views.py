@@ -134,12 +134,12 @@ def file_download(request, anon_result_id):
 def eval_detail(request, eval_result_id):
     eval_re = get_object_or_404(Eval_Result, pk=eval_result_id)
     eval_result = json.loads(eval_re.eval_result)
-    plot_result = dict()
-    plot_result['ncp_k'] = cmp_multiple_result(eval_result[0], [eval_result[1]],
-                               'K', 'NCP (%)', [str(eval_re.anon_algorithm.algorithm_text)], range(0, 65, 5))
-    plot_result['time_k'] = cmp_multiple_result(eval_result[0], [eval_result[2]],
-                                                'K', 'Time (s)', [str(eval_re.anon_algorithm.algorithm_text)])
-    return render(request, 'PPDP/eval_detail.html', {'eval_result': eval_re, 'plot_result': plot_result})
+    # plot_result = dict()
+    # plot_result['ncp_k'] = cmp_multiple_result(eval_result[0], [eval_result[1]],
+    #                            'K', 'NCP (%)', [str(eval_re.anon_algorithm.algorithm_text)], range(0, 65, 5))
+    # plot_result['time_k'] = cmp_multiple_result(eval_result[0], [eval_result[2]],
+    #                                             'K', 'Time (s)', [str(eval_re.anon_algorithm.algorithm_text)])
+    return render(request, 'PPDP/eval_detail.html', {'eval_re': eval_re, 'eval_result': eval_result})
 
 
 # def ncp_k_plot(request, eval_result_id):

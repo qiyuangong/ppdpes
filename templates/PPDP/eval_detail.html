@@ -6,69 +6,129 @@
         {% include 'PPDP/sidebar.html' %}
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 <h1>Eval_Result</h1>
-                <h2>Data: {{eval_result.data.data_text}}</h2>
-                <h2>Model: {{eval_result.anon_model.model_text}}</h2>
-                <h2>Parameters: {{ eval_result.eval_result }}</h2>
-                <img src="data:image/png;base64,{{ plot_result.ncp_k }}"/>
-                <img src="data:image/png;base64,{{ plot_result.time_k }}"/>
-{#                <div id="main" style="width: 600px;height:400px;"></div>#}
-{#                <script type="text/javascript">#}
-{#                    // 基于准备好的dom，初始化echarts实例#}
-{#                    var myChart = echarts.init(document.getElementById('main'));#}
-{##}
-{#                    // 指定图表的配置项和数据#}
-{#                    option = {#}
-{#                        title: {#}
-{#                            text: 'NCP_K'#}
-{#                        },#}
-{#                        tooltip : {#}
-{#                            trigger: 'axis'#}
-{#                        },#}
-{#                        legend: {#}
-{#                            data:['邮件营销']#}
-{#                        },#}
-{#                        toolbox: {#}
-{#                            feature: {#}
-{#                                saveAsImage: {}#}
-{#                            }#}
-{#                        },#}
-{#                        grid: {#}
-{#                            left: '3%',#}
-{#                            right: '4%',#}
-{#                            bottom: '3%',#}
-{#                            containLabel: true#}
-{#                        },#}
-{#                        xAxis : [#}
-{#                            {#}
-{#                                type : 'category',#}
-{#                                boundaryGap : false,#}
-{#                                data : ['周一','周二','周三','周四','周五','周六','周日']#}
-{#                            }#}
-{#                        ],#}
-{#                        yAxis : [#}
-{#                            {#}
-{#                                type : 'value'#}
-{#                            }#}
-{#                        ],#}
-{#                        series : [#}
-{#                            {#}
-{#                                name:'搜索引擎',#}
-{#                                type:'line',#}
-{#                                stack: '总量',#}
-{#                                label: {#}
-{#                                    normal: {#}
-{#                                        show: true,#}
-{#                                        position: 'top'#}
-{#                                    }#}
-{#                                },#}
-{#                                areaStyle: {normal: {}},#}
-{#                                data:[820, 932, 901, 934, 1290, 1330, 1320]#}
-{#                            }#}
-{#                        ]#}
-{#                    };#}
-{#                    // 使用刚指定的配置项和数据显示图表。#}
-{#                    myChart.setOption(option);#}
-{#                </script>#}
+                <h2>Data: {{eval_re.data.data_text}}</h2>
+                <h2>Model: {{eval_re.anon_model.model_text}}</h2>
+                <h2>Parameters: {{ eval_result }}</h2>
+{#                <img src="data:image/png;base64,{{ plot_result.ncp_k }}"/>#}
+{#                <img src="data:image/png;base64,{{ plot_result.time_k }}"/>#}
+                <div id="main" style="width: 600px;height:400px;"></div>
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('main'));
+
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: 'NCP_K(%)'
+                        },
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['NCP']
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                name : 'K',
+                                type : 'category',
+                                boundaryGap : false,
+                                data :[{{ eval_result.0|join:", " }}]
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value'
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'数据缺损',
+                                type:'line',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: 'top'
+                                    }
+                                },
+                                areaStyle: {normal: {}},
+                                data:[{{ eval_result.1|join:", " }}]
+                            }
+                        ]
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                </script>
+                <div id="time_main" style="width: 600px;height:400px;"></div>
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('time_main'));
+
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: 'NCP_Time(S)'
+                        },
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['NCP']
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                name : 'K',
+                                type : 'category',
+                                boundaryGap : false,
+                                data :[{{ eval_result.0|join:", " }}]
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value'
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'运行时间',
+                                type:'line',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: 'top'
+                                    }
+                                },
+                                areaStyle: {normal: {}},
+                                data:[{{ eval_result.2|join:", " }}]
+                            }
+                        ]
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                </script>
             </div>
         </div>
     </div>
