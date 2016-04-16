@@ -25,12 +25,13 @@ class add_data_form(forms.ModelForm):
 
     class Meta:
         model = Data
-        fields = ['data_text', 'size', 'sa_index', 'is_missing', 'is_high', 'is_rt']
+        fields = ['data_text', 'size', 'sa_index', 'is_cat', 'is_missing', 'is_high', 'is_rt']
 
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)
     sa_index = forms.IntegerField(initial=-1)
+    is_cat = forms.CharField(max_length=50)
     is_missing = forms.IntegerField(initial=0)
     is_high = forms.IntegerField(initial=0)
     is_rt = forms.IntegerField(initial=0)
