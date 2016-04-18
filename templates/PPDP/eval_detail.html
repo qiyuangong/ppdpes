@@ -8,18 +8,19 @@
                 <h1>Eval_Result</h1>
                 <h2>Data: {{eval_re.data.data_text}}</h2>
                 <h2>Model: {{eval_re.anon_model.model_text}}</h2>
-                <h2>Parameters: {{ eval_result }}</h2>
+{#                <h2>Parameters: {{ eval_result }}</h2>#}
 {#                <img src="data:image/png;base64,{{ plot_result.ncp_k }}"/>#}
 {#                <img src="data:image/png;base64,{{ plot_result.time_k }}"/>#}
-                <div id="main" style="width: 600px;height:400px;"></div>
+                {% for test_case, res in eval_result.iteritems %}
+                <div id="NCP_{{ test_case }}" style="width:600px;height:400px;display: inline-block;"></div>
                 <script type="text/javascript">
                     // 基于准备好的dom，初始化echarts实例
-                    var myChart = echarts.init(document.getElementById('main'));
+                    var myChart = echarts.init(document.getElementById('NCP_{{ test_case }}'));
 
                     // 指定图表的配置项和数据
                     option = {
                         title: {
-                            text: 'NCP_K(%)'
+                            text: 'NCP_{{ test_case }}'
                         },
                         tooltip : {
                             trigger: 'axis'
@@ -34,16 +35,16 @@
                         },
                         grid: {
                             left: '3%',
-                            right: '4%',
+                            right: '8%',
                             bottom: '3%',
                             containLabel: true
                         },
                         xAxis : [
                             {
-                                name : 'K',
+                                name : '{{ test_case }}',
                                 type : 'category',
                                 boundaryGap : false,
-                                data :[{{ eval_result.0|join:", " }}]
+                                data :[{{ res.0|join:", " }}]
                             }
                         ],
                         yAxis : [
@@ -63,22 +64,22 @@
                                     }
                                 },
                                 areaStyle: {normal: {}},
-                                data:[{{ eval_result.1|join:", " }}]
+                                data:[{{ res.1|join:", " }}]
                             }
                         ]
                     };
                     // 使用刚指定的配置项和数据显示图表。
                     myChart.setOption(option);
                 </script>
-                <div id="time_main" style="width: 600px;height:400px;"></div>
+                <div id="Time_{{ test_case }}" style="width: 600px;height:400px;display: inline-block;"></div>
                 <script type="text/javascript">
                     // 基于准备好的dom，初始化echarts实例
-                    var myChart = echarts.init(document.getElementById('time_main'));
+                    var myChart = echarts.init(document.getElementById('Time_{{ test_case }}'));
 
                     // 指定图表的配置项和数据
                     option = {
                         title: {
-                            text: 'NCP_Time(S)'
+                            text: 'Time_{{ test_case }}'
                         },
                         tooltip : {
                             trigger: 'axis'
@@ -93,16 +94,16 @@
                         },
                         grid: {
                             left: '3%',
-                            right: '4%',
+                            right: '8%',
                             bottom: '3%',
                             containLabel: true
                         },
                         xAxis : [
                             {
-                                name : 'K',
+                                name : '{{ test_case }}',
                                 type : 'category',
                                 boundaryGap : false,
-                                data :[{{ eval_result.0|join:", " }}]
+                                data :[{{ res.0|join:", " }}]
                             }
                         ],
                         yAxis : [
@@ -122,13 +123,14 @@
                                     }
                                 },
                                 areaStyle: {normal: {}},
-                                data:[{{ eval_result.2|join:", " }}]
+                                data:[{{ res.2|join:", " }}]
                             }
                         ]
                     };
                     // 使用刚指定的配置项和数据显示图表。
                     myChart.setOption(option);
                 </script>
+                {% endfor %}
             </div>
         </div>
     </div>
