@@ -6,9 +6,10 @@
         <div class="row">
         {% include 'PPDP/sidebar.html' %}
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1>Anon_Result</h1>
+                <h1 class="page-header">{{anon_result.key}}</h1>
                 <h2>Data: {{anon_result.data.data_text}}</h2>
                 <h2>Model: {{anon_result.anon_model.model_text}}</h2>
+                <h2>Algorithm: {{anon_result.anon_algorithm.algorithm_text}}</h2>
                 <h2>NCP: {{ parameters.ncp }}%</h2>
                 <h2>Running Time: {{ parameters.time }} seconds</h2>
                 <a href={{ parameters.url }}>Download Anon_Data File</a>

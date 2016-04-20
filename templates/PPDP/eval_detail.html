@@ -5,9 +5,10 @@
         <div class="row">
         {% include 'PPDP/sidebar.html' %}
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1>Eval_Result</h1>
+                <h1 class="page-header">{{eval_re.key}}</h1>
                 <h2>Data: {{eval_re.data.data_text}}</h2>
                 <h2>Model: {{eval_re.anon_model.model_text}}</h2>
+                <h2>Algorithm: {{eval_re.anon_algorithm.algorithm_text}}</h2>
 {#                <h2>Parameters: {{ eval_result }}</h2>#}
 {#                <img src="data:image/png;base64,{{ plot_result.ncp_k }}"/>#}
 {#                <img src="data:image/png;base64,{{ plot_result.time_k }}"/>#}

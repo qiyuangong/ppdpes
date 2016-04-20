@@ -5,11 +5,10 @@
         <div class="row">
             {% include 'PPDP/sidebar.html' %}
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h1 class="page-header">Welcome to Southeast University PPDPES</h1>
+                <h1 class="page-header">Anonymization Tasks:</h1>
                 <div class="table-responsive">
                     {% if anon_list %}
                     <table class="table table-striped">
-                        <h2>Current Anon Tasks:</h2>
                         <thead>
                             <tr>
                                 <th>Key</th>
@@ -24,7 +23,7 @@
                         <tbody>
                             {% for anon_reslut in anon_list %}
                                 <tr>
-                                    <td><a href={% url 'anon_detail' anon_reslut.id %}>{{ anon_reslut.id }}: {{ anon_reslut.key }}</a></td>>
+                                    <td><a href={% url 'anon_detail' anon_reslut.id %}>{{ anon_reslut.id }}: {{ anon_reslut.key }}</a></td>
                                     <td>{{ anon_reslut.data.data_text }}</td>
                                     <td>{{ anon_reslut.anon_model.model_text }}</td>
                                     <td>{{ anon_reslut.anon_algorithm.algorithm_text }}</td>
