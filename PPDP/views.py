@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 # from fig_plot import cmp_multiple_result
-import json
+import json, ast
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 
 from models import Anon_Task, Anon_Result, Eval_Result, Data
-from forms import add_task_form, add_data_form, UploadFileForm
+from forms import add_task_form, add_data_form, UploadFileForm, UploadGHForm
 from django.contrib.auth.decorators import login_required
+from file_utility import ftp_upload
 import pdb
 
 
@@ -106,15 +107,32 @@ def file_upload(request):
         if form.is_valid():
             title = request.POST['title']
             handle_uploaded_file(request.FILES['file_content'], title)
-
             data = Data.create(title, "tmp/" + str(title) + ".txt", request.POST['sa_index'],
-                        request.POST['is_missing'], request.POST['is_high'], request.POST['is_rt'])
+                               request.POST['qid_index'], request.POST['is_cat'], request.POST['task_cat'])
             data.save()
-            return HttpResponseRedirect('/PPDP/')
+            return HttpResponseRedirect('/PPDP/upload_gh/' + str(data.id))
+
     else:
         form = UploadFileForm()
     return render(request, 'PPDP/upload.html', {'form': form})
 
+
+@login_required
+def gh_upload(request, data_id):
+    if request.method == 'POST':
+        form = UploadGHForm(request.POST, request.FILES, data_id=data_id)
+        if form.is_valid():
+            data = Data.objects.get(id=data_id)
+            qid_index = ast.literal_eval(data.qid_index)
+            is_cat = ast.literal_eval(data.is_cat)
+            for pos, index in enumerate(qid_index):
+                if is_cat[pos] == 1:
+                    handle_uploaded_file(request.FILES['att_' + str(index)], data.data_text + '_' + str(index))
+            return HttpResponseRedirect('/PPDP/')
+
+    else:
+        form = UploadGHForm(data_id=data_id)
+    return render(request, 'PPDP/upload_gh.html', {'form': form})
 
 
 @login_required
@@ -122,13 +140,14 @@ def file_download(request, anon_result_id):
     anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
     temp = json.loads(anon_result.anon_result)
     file_url = temp['url']
-    print anon_result.anon_result
+    # print anon_result.anon_result
     with open(file_url) as file:
         response = HttpResponse(file.read())
         response['Content-Disposition'] = 'attachment;filename="{0}"'.format(file_url.split('/')[-1])
         response['Content-Type'] = 'application/octet-stream'
         file.close()
         return response
+
 
 @login_required
 def eval_detail(request, eval_result_id):
@@ -159,55 +178,58 @@ def handle_uploaded_file(read_file, title='test'):
         for chunk in read_file.chunks():
             destination.write(chunk)
     destination.close()
+    # TODO .txt
+    ftp_upload(title + ".txt", "tmp/")
 
 
-def cmp_multiple_result(xdata, ydatas, xname, yname, labels, yrange=range(0, 100, 10)):
-    import matplotlib
-    from django.http import HttpResponse
-    matplotlib.use('Agg')
-    import random
-    from matplotlib import pyplot as plt
-    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-    import base64
-    from io import BytesIO
-    font = {'family': 'monospace',
-    'weight': 'bold',
-    'size': 20}
-    size = [8.33, 6.36]
-    marksize = 15
-    matplotlib.rc('font', **font)
-    marker_style = ['s', '^', 'o', 'v', '*', '+', 'p']
-    colors = ['b', 'r', 'c', 'g', 'm', 'y']
-    line = ['-', '-', '-', '-']
-    current_num = random.randint(1, 1000)
-    fig = plt.figure(current_num, size)
-    ls = len(labels)
-    for i in range(ls):
-        plt.plot(range(len(xdata)), ydatas[i], color=colors[i],
-                linewidth=3.2, linestyle=line[i], marker=marker_style[i], ms=marksize, label=labels[i])
-    plt.xticks(range(len(xdata)), xdata)
-    plt.yticks(yrange)
-    plt.ylabel(yname)
-    plt.xlabel(xname)
-    # axis([xdata[0], xdata[-1], 0, 40])
-    plt.legend(loc='upper left', frameon=False, fontsize=20)
-    # legend(loc='lower right')
-    # legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-    # ncol=2, mode="expand", borderaxespad=0.)
-    plt.grid(True)
-    # remove blank col caused by odd number
-    plt.xlim(0, len(xdata) - 1)
-    # fig.set_size_inches(size[0], size[1])
-    # canvas = FigureCanvas(fig)
-    # response=HttpResponse(content_type='image/png')
-    # canvas.print_png(response)
-    # fig.clf()
-    # plt.close()
-    # return response
-    byte_io = BytesIO()
-    plt.savefig(byte_io, format='png')
-    byte_io.seek(0)  # rewind to beginning of file
-    png_base64 = base64.b64encode(byte_io.getvalue())
-    fig.clf()
-    plt.close(current_num)
-    return png_base64
+
+# def cmp_multiple_result(xdata, ydatas, xname, yname, labels, yrange=range(0, 100, 10)):
+#     import matplotlib
+#     from django.http import HttpResponse
+#     matplotlib.use('Agg')
+#     import random
+#     from matplotlib import pyplot as plt
+#     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+#     import base64
+#     from io import BytesIO
+#     font = {'family': 'monospace',
+#     'weight': 'bold',
+#     'size': 20}
+#     size = [8.33, 6.36]
+#     marksize = 15
+#     matplotlib.rc('font', **font)
+#     marker_style = ['s', '^', 'o', 'v', '*', '+', 'p']
+#     colors = ['b', 'r', 'c', 'g', 'm', 'y']
+#     line = ['-', '-', '-', '-']
+#     current_num = random.randint(1, 1000)
+#     fig = plt.figure(current_num, size)
+#     ls = len(labels)
+#     for i in range(ls):
+#         plt.plot(range(len(xdata)), ydatas[i], color=colors[i],
+#                 linewidth=3.2, linestyle=line[i], marker=marker_style[i], ms=marksize, label=labels[i])
+#     plt.xticks(range(len(xdata)), xdata)
+#     plt.yticks(yrange)
+#     plt.ylabel(yname)
+#     plt.xlabel(xname)
+#     # axis([xdata[0], xdata[-1], 0, 40])
+#     plt.legend(loc='upper left', frameon=False, fontsize=20)
+#     # legend(loc='lower right')
+#     # legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+#     # ncol=2, mode="expand", borderaxespad=0.)
+#     plt.grid(True)
+#     # remove blank col caused by odd number
+#     plt.xlim(0, len(xdata) - 1)
+#     # fig.set_size_inches(size[0], size[1])
+#     # canvas = FigureCanvas(fig)
+#     # response=HttpResponse(content_type='image/png')
+#     # canvas.print_png(response)
+#     # fig.clf()
+#     # plt.close()
+#     # return response
+#     byte_io = BytesIO()
+#     plt.savefig(byte_io, format='png')
+#     byte_io.seek(0)  # rewind to beginning of file
+#     png_base64 = base64.b64encode(byte_io.getvalue())
+#     fig.clf()
+#     plt.close(current_num)
+#     return png_base64

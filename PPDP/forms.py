@@ -1,6 +1,7 @@
 #coding=utf-8
 from django import forms
 from models import Anon_Task, Anon_Algorithm, Anon_Model, Data
+import ast
 
 TASK_CAT = (
     ('1', '高维数据'),
@@ -18,24 +19,40 @@ class add_task_form(forms.ModelForm):
 
     class Meta:
         model = Anon_Task
-        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'parameters', 'task_type']
+        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'parameters', 'task_cat']
 
 
 class add_data_form(forms.ModelForm):
+    task_cat = forms.ChoiceField(label='选择数据类型', choices=TASK_CAT)
 
     class Meta:
         model = Data
-        fields = ['data_text', 'size', 'sa_index', 'is_cat', 'is_missing', 'is_high', 'is_rt']
+        fields = ['data_text', 'size', 'sa_index', 'qid_index', 'is_cat', 'task_cat']
 
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)
     sa_index = forms.IntegerField(initial=-1)
+    qid_index = forms.CharField(max_length=200)
     is_cat = forms.CharField(max_length=50)
-    is_missing = forms.IntegerField(initial=0)
-    is_high = forms.IntegerField(initial=0)
-    is_rt = forms.IntegerField(initial=0)
+    task_cat = forms.ChoiceField(label='选择数据类型', choices=TASK_CAT)
     file_content = forms.FileField()
+
+    def is_valid(self):
+        return True
+
+class UploadGHForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        data_id = kwargs.pop('data_id')
+        super(UploadGHForm, self).__init__(*args, **kwargs)
+        data = Data.objects.get(id=data_id)
+        qid_index = ast.literal_eval(data.qid_index)
+        is_cat = ast.literal_eval(data.is_cat)
+        # print is_cat
+        for pos, index in enumerate(qid_index):
+            if is_cat[pos] == 1:
+                # self.fields['att_name_for %s' % index] = forms.CharField(max_length=50)
+                self.fields['att_%s' % index] = forms.FileField()
 
     def is_valid(self):
         return True

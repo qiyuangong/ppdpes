@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^anon(?P<anon_result_id>[0-9]+)$', views.anon_detail, name='anon_detail'),
     url(r'^eval(?P<eval_result_id>[0-9]+)$', views.eval_detail, name='eval_detail'),
     url(r'^upload$', views.file_upload, name='file_upload'),
+    url(r'^upload_gh/(?P<data_id>[0-9]+)$', views.gh_upload, name='gh_upload'),
     url(r'^about', views.about, name='about'),
     ]
 

@@ -16,7 +16,6 @@ CALL_BACK_URL = 'http://' + HOST + ':8000/PPDP/task_update'
 def eval(task_id, eval_parameters):
     result = universe_anonymizer(eval_parameters)
     # end_time = datetime.datetime.now()
-    #TODO eval dict
     URL(CALL_BACK_URL).get_async(task_id=task_id, result=json.dumps(result['k']))
     # return json.dumps(result), end_time
     # eval_result = Eval_Result.objects.get(pk=eval_id)

@@ -28,9 +28,19 @@ class Data(models.Model):
         return self.data_text
 
     @classmethod
-    def create(cls, title, url, sa_index, is_cat, is_missing, is_high, is_rt):
-        data = cls(data_text=title, data_url=url, sa_index=sa_index, is_cat=is_cat,
-                   is_missing=is_missing, is_high=is_high,is_rt=is_rt)
+    def create(cls, title, url, sa_index, qid_index, is_cat, flag):
+        # print flag, type(flag)
+        is_missing = 0
+        is_high = 0
+        is_rt = 0
+        if flag == '1':
+            is_missing = 1
+        elif flag == '2':
+            is_high = 1
+        elif flag == '3':
+            is_rt = 1
+        data = cls(data_text=title, data_url=url, sa_index=sa_index, qid_index=qid_index,
+                   is_cat=is_cat, is_missing=is_missing, is_high=is_high, is_rt=is_rt)
         return data
 
 
