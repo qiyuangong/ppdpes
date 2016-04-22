@@ -106,7 +106,8 @@ def file_upload(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             title = request.POST['title']
-            handle_uploaded_file(request.FILES['file_content'], title)
+            # upload *.data
+            handle_uploaded_file(request.FILES['file_content'], title, '.data')
             data = Data.create(title, "tmp/" + str(title) + ".txt", request.POST['sa_index'],
                                request.POST['qid_index'], request.POST['is_cat'], request.POST['task_cat'])
             data.save()
@@ -173,8 +174,8 @@ def eval_detail(request, eval_result_id):
 #     #                            'K', 'NCP (%)', ['Mondrian', 'Semi-Partition'], range(0, 65, 5))
 
 
-def handle_uploaded_file(read_file, title='test'):
-    with open("tmp/" + str(title) + ".txt", 'w') as destination:
+def handle_uploaded_file(read_file, title='test', postfix='.txt'):
+    with open("tmp/" + str(title) + postfix, 'w') as destination:
         for chunk in read_file.chunks():
             destination.write(chunk)
     destination.close()

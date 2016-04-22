@@ -15,11 +15,12 @@ TASK_TYPE = [
 ]
 
 class add_task_form(forms.ModelForm):
+    task_type = forms.ChoiceField(label='选择演示任务', choices=TASK_TYPE)
     task_cat = forms.ChoiceField(label='选择演示任务', choices=TASK_CAT)
 
     class Meta:
         model = Anon_Task
-        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'parameters', 'task_cat']
+        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'parameters', 'task_type']
 
 
 class add_data_form(forms.ModelForm):

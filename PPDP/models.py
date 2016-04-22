@@ -167,7 +167,7 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
                     # transaction.on_commit(lambda: anon.delay(instance.id, key, basic_parameters))
                     try:
                         anon.delay(instance.id, key, basic_parameters + ['anon'] + [instance.parameters['anon']])
-                    except KeyError:
+                    except (TypeError, KeyError):
                         anon.delay(instance.id, key, basic_parameters)
                 else:
                     # instance, eval_result
@@ -175,6 +175,6 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
                     # print instance.parameters['eval']
                     try:
                         eval.delay(instance.id, basic_parameters + ['eval'] + instance.parameters['eval'])
-                    except KeyError:
+                    except (TypeError, KeyError):
                         # eval with k
                         eval.delay(instance.id, basic_parameters + ['eval', 'k'])
