@@ -12,7 +12,7 @@ import json
 # CALL_BACK_URL = 'http://' + HOST + ':8000/PPDP/task_update'
 
 @shared_task
-def eval(task_id, eval_parameters):
+def eval(task_id, key, eval_parameters):
     pass
     # result = universe_anonymizer(eval_parameters)
     # end_time = datetime.datetime.now()
