@@ -26,7 +26,7 @@ SECRET_KEY = 'f^cei#k_4fuvlseo@#emmwy&4j+gpr2crdyjdz((e-6geyu-zn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['223.3.70.138', 'dark.qygong.net']
 BROKER_URL = 'amqp://jssec:ibmc51@localhost//'
 
 from datetime import timedelta

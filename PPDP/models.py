@@ -174,7 +174,7 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
                     # transaction.on_commit(lambda: eval.delay(instance.id, basic_parameters + ['k']))
                     # print instance.parameters['eval']
                     try:
-                        eval.delay(instance.id, basic_parameters + ['eval'] + instance.parameters['eval'])
+                        eval.delay(instance.id, key, basic_parameters + ['eval'] + instance.parameters['eval'])
                     except (TypeError, KeyError):
                         # eval with k
-                        eval.delay(instance.id, basic_parameters + ['eval', 'k'])
+                        eval.delay(instance.id, key, basic_parameters + ['eval', 'k'])
