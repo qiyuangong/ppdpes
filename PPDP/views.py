@@ -106,9 +106,10 @@ def file_upload(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             title = request.POST['title']
+            name, postfix = title.split('.')
             # upload *.data
-            handle_uploaded_file(request.FILES['file_content'], title, '.data')
-            data = Data.create(title, "tmp/" + str(title) + ".txt", request.POST['sa_index'],
+            handle_uploaded_file(request.FILES['file_content'], name, '.' + postfix)
+            data = Data.create(name, "tmp/" + str(title), request.POST['sa_index'],
                                request.POST['qid_index'], request.POST['is_cat'], request.POST['task_cat'])
             data.save()
             return HttpResponseRedirect('/PPDP/upload_gh/' + str(data.id))
@@ -179,8 +180,7 @@ def handle_uploaded_file(read_file, title='test', postfix='.txt'):
         for chunk in read_file.chunks():
             destination.write(chunk)
     destination.close()
-    # TODO .txt
-    ftp_upload(title + ".txt", "tmp/")
+    ftp_upload(title + postfix, "tmp/")
 
 
 
