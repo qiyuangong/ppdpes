@@ -124,6 +124,7 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
     if kwargs['created']:
         key = '-'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
         basic_parameters = []
+        print instance.data.data_text
         if "adult" in instance.data.data_text:
             basic_parameters.append('a')
         else:
@@ -132,6 +133,12 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
             basic_parameters.append('m')
         elif 'Semi' in instance.anon_algorithm.algorithm_text:
             basic_parameters.append('s')
+        elif '1M' in instance.anon_algorithm.algorithm_text:
+            basic_parameters.append('1m')
+        elif 'APA' in instance.anon_algorithm.algorithm_text:
+            basic_parameters.append('apa')
+        elif 'PAA' in instance.anon_algorithm.algorithm_text:
+            basic_parameters.append('paa')
         else:
             basic_parameters.append('m')
         flag = True
