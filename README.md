@@ -1,5 +1,10 @@
 This a prototype sytem of PPDPES
 
+
+start server:
+
+	python manage.py runserver 0.0.0.0:8888
+
 1) Test:
 
     python -m unittest discover . "_test.py"

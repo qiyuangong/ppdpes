@@ -3,7 +3,6 @@ from django.shortcuts import render, get_object_or_404
 import json, ast
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
-
 from models import Anon_Task, Anon_Result, Eval_Result, Data
 from forms import add_task_form, add_data_form, UploadFileForm, UploadGHForm
 from django.contrib.auth.decorators import login_required

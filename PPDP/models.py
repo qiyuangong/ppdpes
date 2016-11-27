@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils import timezone
+from datetime import datetime
 from jsonfield import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from tasks import eval, anon
 from django.db import transaction
+from django.utils.timezone import utc
 
 TASK_TYPE = [
     (0, 'Anon_Task'),
@@ -74,7 +76,7 @@ class Anon_Task(models.Model):
     task_type = models.IntegerField(default=0, choices=TASK_TYPE)
     start_time = models.DateTimeField(default=timezone.now)
     result_set = models.IntegerField(default=-1)
-    end_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=datetime(2015, 11, 26, 12, 52, 45, 773000, tzinfo=utc))
 
     def is_finished(self):
         return self.end_time > self.start_time
@@ -90,7 +92,7 @@ class Anon_Result(models.Model):
     anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
     anon_result = JSONField(null=True, blank=True)
     start_time = models.DateTimeField(default=timezone.now)
-    end_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=datetime(2015, 11, 26, 12, 52, 45, 773000, tzinfo=utc))
 
     @classmethod
     def create(cls, key, anon_parameters):
@@ -108,7 +110,7 @@ class Eval_Result(models.Model):
     anon_algorithm = models.ForeignKey(Anon_Algorithm, on_delete=models.CASCADE)
     eval_result = JSONField(null=True, blank=True)
     start_time = models.DateTimeField(default=timezone.now)
-    end_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=datetime(2015, 11, 26, 12, 52, 45, 773000, tzinfo=utc))
 
     @classmethod
     def create(cls, key, eval_parameters):
