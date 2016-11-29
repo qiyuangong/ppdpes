@@ -20,8 +20,8 @@ class add_task_form(forms.ModelForm):
 
     class Meta:
         model = Anon_Task
-        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm',
-                  'parameters', 'task_type', 'task_cat']
+        fields = ['task_text', 'task_type', 'task_cat', 'data', 'anon_model', 'anon_algorithm',
+                  'parameters', ]
 
 
 class add_data_form(forms.ModelForm):
@@ -29,7 +29,7 @@ class add_data_form(forms.ModelForm):
 
     class Meta:
         model = Data
-        fields = ['data_text', 'size', 'sa_index', 'qid_index', 'is_cat', 'task_cat']
+        fields = ['data_text', 'task_cat', 'size', 'sa_index', 'qid_index', 'is_cat']
 
     def is_valid(self):
         return True
@@ -37,10 +37,10 @@ class add_data_form(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)
+    task_cat = forms.ChoiceField(label='选择数据类型', choices=TASK_CAT)
     sa_index = forms.IntegerField(initial=-1)
     qid_index = forms.CharField(max_length=200)
     is_cat = forms.CharField(max_length=50)
-    task_cat = forms.ChoiceField(label='选择数据类型', choices=TASK_CAT)
     file_content = forms.FileField()
 
     def is_valid(self):
@@ -58,7 +58,8 @@ class UploadGHForm(forms.Form):
             if is_cat[pos] == 1:
                 # self.fields['att_name_for %s' % index] = forms.CharField(max_length=50)
                 self.fields['att_%s' % index] = forms.FileField()
-
+        if data.is_rt == 1:
+            self.fields['Sensitive GH for RT-data'] = forms.FileField()
     def is_valid(self):
         return True
 

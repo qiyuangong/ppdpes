@@ -139,7 +139,7 @@ def file_upload(request):
             name, postfix = title.split('.')
             # upload *.data
             handle_uploaded_file(request.FILES['file_content'], name, '.' + postfix)
-            data = Data.create(name, "tmp/" + str(title), request.POST['sa_index'],
+            data = Data.create(name, request.POST['title'], "tmp/" + str(title), request.POST['sa_index'],
                                request.POST['qid_index'], request.POST['is_cat'], request.POST['task_cat'])
             data.save()
             return HttpResponseRedirect('/PPDP/upload_gh/' + str(data.id))
@@ -160,6 +160,8 @@ def gh_upload(request, data_id):
             for pos, index in enumerate(qid_index):
                 if is_cat[pos] == 1:
                     handle_uploaded_file(request.FILES['att_' + str(index)], data.data_text + '_' + str(index))
+            if data.is_rt == 1:
+                handle_uploaded_file(request.FILES['Sensitive GH for RT-data'], data.data_text + '_' + 'sa')
             return HttpResponseRedirect('/PPDP/')
 
     else:

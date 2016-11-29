@@ -31,18 +31,18 @@ class Data(models.Model):
         return self.data_text
 
     @classmethod
-    def create(cls, title, url, sa_index, qid_index, is_cat, flag):
+    def create(cls, title, full_name, url, sa_index, qid_index, is_cat, flag):
         # print flag, type(flag)
         is_missing = 0
         is_high = 0
         is_rt = 0
-        if flag == '1':
+        if flag == '0':
             is_missing = 1
-        elif flag == '2':
+        elif flag == '1':
             is_high = 1
-        elif flag == '3':
+        elif flag == '2':
             is_rt = 1
-        data = cls(data_text=title, data_url=url, sa_index=sa_index, qid_index=qid_index,
+        data = cls(data_text=title, full_name=full_name, data_url=url, sa_index=sa_index, qid_index=qid_index,
                    is_cat=is_cat, is_missing=is_missing, is_high=is_high, is_rt=is_rt)
         return data
 
@@ -60,7 +60,6 @@ class Anon_Algorithm(models.Model):
     algorithm_text = models.CharField(max_length=200)
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     parameter = models.CharField(max_length=200, blank=True, default='')
-    short = models.CharField(default='', max_length=200)
     is_missing = models.IntegerField(default=0)
     is_high = models.IntegerField(default=0)
     is_rt = models.IntegerField(default=0)
@@ -131,22 +130,8 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
     if kwargs['created']:
         key = '-'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
         basic_parameters = []
-        if "adult" in instance.data.data_text:
-            basic_parameters.append('a')
-        else:
-            basic_parameters.append('i')
-        if 'Mondrian' in instance.anon_algorithm.algorithm_text:
-            basic_parameters.append('m')
-        elif 'Semi' in instance.anon_algorithm.algorithm_text:
-            basic_parameters.append('s')
-        elif '1M' in instance.anon_algorithm.algorithm_text:
-            basic_parameters.append('1m')
-        elif 'APA' in instance.anon_algorithm.algorithm_text:
-            basic_parameters.append('apa')
-        elif 'PAA' in instance.anon_algorithm.algorithm_text:
-            basic_parameters.append('paa')
-        else:
-            basic_parameters.append('m')
+        basic_parameters.append(instance.data.full_name)
+        basic_parameters.append(instance.anon_algorithm.algorithm_text)
         flag = True
         if instance.task_type == 0:
             try:
