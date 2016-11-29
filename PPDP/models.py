@@ -18,6 +18,7 @@ TASK_TYPE = [
 class Data(models.Model):
     data_text = models.CharField(max_length=200)
     data_url = models.CharField(max_length=200)
+    full_name = models.CharField(max_length=200)
     size = models.IntegerField(default=0)
     qid_index = models.CharField(max_length=200)
     sa_index = models.CharField(max_length=200)
@@ -59,6 +60,7 @@ class Anon_Algorithm(models.Model):
     algorithm_text = models.CharField(max_length=200)
     anon_model = models.ForeignKey(Anon_Model, on_delete=models.CASCADE)
     parameter = models.CharField(max_length=200, blank=True, default='')
+    short = models.CharField(default='', max_length=200)
     is_missing = models.IntegerField(default=0)
     is_high = models.IntegerField(default=0)
     is_rt = models.IntegerField(default=0)
@@ -77,6 +79,9 @@ class Anon_Task(models.Model):
     start_time = models.DateTimeField(default=timezone.now)
     result_set = models.IntegerField(default=-1)
     end_time = models.DateTimeField(default=datetime(2015, 11, 26, 12, 52, 45, 773000, tzinfo=utc))
+    is_missing = models.IntegerField(default=0)
+    is_high = models.IntegerField(default=0)
+    is_rt = models.IntegerField(default=0)
 
     def is_finished(self):
         return self.end_time > self.start_time
@@ -126,7 +131,6 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
     if kwargs['created']:
         key = '-'.join((instance.data.data_text, instance.anon_algorithm.algorithm_text, str(instance.parameters)))
         basic_parameters = []
-        print instance.data.data_text
         if "adult" in instance.data.data_text:
             basic_parameters.append('a')
         else:

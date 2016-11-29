@@ -4,9 +4,9 @@ from models import Anon_Task, Anon_Algorithm, Anon_Model, Data
 import ast
 
 TASK_CAT = (
-    ('1', '高维数据'),
-    ('2', '缺失数据'),
-    ('3', '复杂关系'),
+    (0, '高维数据'),
+    (1, '缺失数据'),
+    (2, '复杂关系'),
 )
 
 TASK_TYPE = [
@@ -20,7 +20,8 @@ class add_task_form(forms.ModelForm):
 
     class Meta:
         model = Anon_Task
-        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm', 'parameters', 'task_type']
+        fields = ['task_text', 'data', 'anon_model', 'anon_algorithm',
+                  'parameters', 'task_type', 'task_cat']
 
 
 class add_data_form(forms.ModelForm):
@@ -29,6 +30,9 @@ class add_data_form(forms.ModelForm):
     class Meta:
         model = Data
         fields = ['data_text', 'size', 'sa_index', 'qid_index', 'is_cat', 'task_cat']
+
+    def is_valid(self):
+        return True
 
 
 class UploadFileForm(forms.Form):
@@ -59,23 +63,23 @@ class UploadGHForm(forms.Form):
         return True
 
 
-class old_task_form(forms.Form):
-    task_cat = forms.ChoiceField(label='选择演示任务', choices=TASK_CAT)
-    task_type = forms.ChoiceField(label='选择任务类型', choices=TASK_TYPE)
-    dataset_choice = [(index, ins.data_text) for index, ins in enumerate(Data.objects.all())]
-    model_choice = [(index, ins.model_text) for index, ins in enumerate(Anon_Model.objects.all())]
-    algorithm_choice = [(index, ins.algorithm_text) for index, ins in enumerate(Anon_Algorithm.objects.all())]
-    dataset = forms.ChoiceField(label='选择数据集', choices=dataset_choice)
-    model = forms.ChoiceField(label='选择匿名模型',choices=model_choice)
-    algorithm = forms.ChoiceField(label='选择匿名算法',choices=algorithm_choice)
-    parameter = forms.CharField()
-
-    def is_valid(self):
-        return True
-
-    def clean_dataset(self):
-        data_s = self.cleaned_data.get('dataset')
-        return Data.objects.get(data_text=data_s)
+# class old_task_form(forms.Form):
+#     task_cat = forms.ChoiceField(label='选择演示任务', choices=TASK_CAT)
+#     task_type = forms.ChoiceField(label='选择任务类型', choices=TASK_TYPE)
+#     dataset_choice = [(index, ins.data_text) for index, ins in enumerate(Data.objects.all())]
+#     model_choice = [(index, ins.model_text) for index, ins in enumerate(Anon_Model.objects.all())]
+#     algorithm_choice = [(index, ins.algorithm_text) for index, ins in enumerate(Anon_Algorithm.objects.all())]
+#     dataset = forms.ChoiceField(label='选择数据集', choices=dataset_choice)
+#     model = forms.ChoiceField(label='选择匿名模型',choices=model_choice)
+#     algorithm = forms.ChoiceField(label='选择匿名算法',choices=algorithm_choice)
+#     parameter = forms.CharField()
+#
+#     def is_valid(self):
+#         return True
+#
+#     def clean_dataset(self):
+#         data_s = self.cleaned_data.get('dataset')
+#         return Data.objects.get(data_text=data_s)
 
 
 

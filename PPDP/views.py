@@ -57,7 +57,14 @@ def add_task(request):
         if form.is_valid(): # All validation rules pass
             # Process the data in form.cleaned_data
             # ...
-            form.save()
+            obj = form.save(commit=False)
+            if form.cleaned_data['task_cat'] == '0':
+                obj.is_high = 1
+            elif form.cleaned_data['task_cat'] == '1':
+                obj.is_missing = 1
+            else:
+                obj.is_rt = 1
+            obj.save()
             # pdb.set_trace()
             return HttpResponseRedirect('/PPDP/') # Redirect after POST
     else:
@@ -72,7 +79,14 @@ def add_data(request):
         if form.is_valid(): # All validation rules pass
             # Process the data in form.cleaned_data
             # ...
-            form.save()
+            obj = form.save(commit=False)
+            if form.cleaned_data['task_cat'] == '0':
+                obj.is_high = 1
+            elif form.cleaned_data['task_cat'] == '1':
+                obj.is_missing = 1
+            else:
+                obj.is_rt = 1
+            obj.save()
             # pdb.set_trace()
             return HttpResponseRedirect('/PPDP/') # Redirect after POST
     else:
@@ -84,6 +98,23 @@ def index(request):
     task_list = Anon_Task.objects.iterator()
     return render(request, 'PPDP/index.html', {'task_list': task_list})
 
+
+@login_required
+def high_index(request):
+    task_list = Anon_Task.objects.filter(is_high=1)
+    return render(request, 'PPDP/index.html', {'task_list': task_list})
+
+
+@login_required
+def missing_index(request):
+    task_list = Anon_Task.objects.filter(is_missing=1)
+    return render(request, 'PPDP/index.html', {'task_list': task_list})
+
+
+@login_required
+def rt_index(request):
+    task_list = Anon_Task.objects.filter(is_rt=1)
+    return render(request, 'PPDP/index.html', {'task_list': task_list})
 
 @login_required
 def task_detail(request, task_id):

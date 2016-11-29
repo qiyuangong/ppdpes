@@ -4,6 +4,9 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='ppdp_index'),
+    url(r'^high$', views.high_index, name='high_index'),
+    url(r'^missing', views.missing_index, name='missing_index'),
+    url(r'^rt', views.rt_index, name='rt_index'),
     url(r'^anon_index$', views.anon_index, name='anon_index'),
     url(r'^eval_index$', views.eval_index, name='eval_index'),
     url(r'^add_task$', views.add_task, name='add_task'),
