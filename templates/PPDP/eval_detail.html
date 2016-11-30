@@ -22,7 +22,7 @@
                             // 指定图表的配置项和数据
                             option = {
                                 title: {
-                                    text: 'NCP_{{ test_case }}'
+                                    text: 'NCP v.s. {{ test_case }}'
                                 },
                                 tooltip : {
                                     trigger: 'axis'
@@ -65,7 +65,7 @@
                                                 position: 'top'
                                             }
                                         },
-                                        areaStyle: {normal: {}},
+                                        areaStyle: {normal: {color:"#0FF"}},
                                         data:[{{ res.1|join:", " }}]
                                     }
                                 ]
@@ -81,7 +81,7 @@
                             // 指定图表的配置项和数据
                             option = {
                                 title: {
-                                    text: 'Time_{{ test_case }}'
+                                    text: 'Time v.s. {{ test_case }}'
                                 },
                                 tooltip : {
                                     trigger: 'axis'
@@ -124,7 +124,7 @@
                                                 position: 'top'
                                             }
                                         },
-                                        areaStyle: {normal: {}},
+                                        areaStyle: {normal: {color:"#0FF"}},
                                         data:[{{ res.2|join:", " }}]
                                     }
                                 ]
@@ -141,7 +141,7 @@
                             // 指定图表的配置项和数据
                             option = {
                                 title: {
-                                    text: 'NCP_{{ test_case }}'
+                                    text: 'NCP v.s. {{ test_case }}'
                                 },
                                 tooltip : {
                                     trigger: 'axis'
@@ -184,7 +184,7 @@
                                                 position: 'top'
                                             }
                                         },
-                                        areaStyle: {normal: {}},
+                                        areaStyle: {normal: {color:"#0FF"}},
                                         data:[{{ res.1|join:", " }}]
                                     }
                                 ]
@@ -200,7 +200,7 @@
                             // 指定图表的配置项和数据
                             option = {
                                 title: {
-                                    text: 'TNCP_{{ test_case }}'
+                                    text: 'TNCP v.s. {{ test_case }}'
                                 },
                                 tooltip : {
                                     trigger: 'axis'
@@ -243,7 +243,7 @@
                                                 position: 'top'
                                             }
                                         },
-                                        areaStyle: {normal: {}},
+                                        areaStyle: {normal: {color:"#0FF"}},
                                         data:[{{ res.2|join:", " }}]
                                     }
                                 ]
@@ -259,7 +259,7 @@
                             // 指定图表的配置项和数据
                             option = {
                                 title: {
-                                    text: 'Time_{{ test_case }}'
+                                    text: 'Time v.s. {{ test_case }}'
                                 },
                                 tooltip : {
                                     trigger: 'axis'
@@ -302,7 +302,7 @@
                                                 position: 'top'
                                             }
                                         },
-                                        areaStyle: {normal: {}},
+                                        areaStyle: {normal: {color:"#0FF"}},
                                         data:[{{ res.3|join:", " }}]
                                     }
                                 ]

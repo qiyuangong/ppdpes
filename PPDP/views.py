@@ -125,7 +125,7 @@ def task_detail(request, task_id):
 @login_required
 def anon_detail(request, anon_result_id):
     anon_result = get_object_or_404(Anon_Result, pk=anon_result_id)
-    parameters = json.loads(anon_result.anon_result)
+    parameters = anon_result.anon_result
     return render(request, 'PPDP/anon_detail.html',
                   {'anon_result': anon_result, 'parameters': parameters})
 
