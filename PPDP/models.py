@@ -132,6 +132,11 @@ def connect_PPDP_Kernel(sender, instance, *args, **kwargs):
         basic_parameters = []
         basic_parameters.append(instance.data.full_name)
         basic_parameters.append(instance.anon_algorithm.algorithm_text)
+        # attributes
+        basic_parameters.append(instance.data.qid_index)
+        basic_parameters.append(instance.data.is_cat)
+        # status
+        basic_parameters.append([instance.data.is_high, instance.data.is_missing, instance.data.is_rt])
         flag = True
         if instance.task_type == 0:
             try:

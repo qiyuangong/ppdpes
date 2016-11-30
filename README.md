@@ -15,9 +15,9 @@ start server:
 
 3) anon JSON
 
-	{"anon":{"k":10, "data": 1000, "qi":[1,2,3]}}
+	{"anon":{"k":10, "data": 1000, "d":[1,2,3]}}
 
 4) eval JSON
 
-	{"eval":["k","qi","data"]}
+	{"eval":["k","d","data"]}
 

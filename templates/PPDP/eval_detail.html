@@ -13,124 +13,304 @@
 {#                <img src="data:image/png;base64,{{ plot_result.ncp_k }}"/>#}
 {#                <img src="data:image/png;base64,{{ plot_result.time_k }}"/>#}
                 {% for test_case, res in eval_result.iteritems %}
-                <div id="NCP_{{ test_case }}" style="width:600px;height:400px;display: inline-block;"></div>
-                <script type="text/javascript">
-                    // 基于准备好的dom，初始化echarts实例
-                    var myChart = echarts.init(document.getElementById('NCP_{{ test_case }}'));
+                    {% if res|length == 3 %}
+                        <div id="NCP_{{ test_case }}" style="width:600px;height:400px;display: inline-block;"></div>
+                        <script type="text/javascript">
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('NCP_{{ test_case }}'));
 
-                    // 指定图表的配置项和数据
-                    option = {
-                        title: {
-                            text: 'NCP_{{ test_case }}'
-                        },
-                        tooltip : {
-                            trigger: 'axis'
-                        },
-                        legend: {
-                            data:['NCP']
-                        },
-                        toolbox: {
-                            feature: {
-                                saveAsImage: {}
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '8%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis : [
-                            {
-                                name : '{{ test_case }}',
-                                type : 'category',
-                                boundaryGap : false,
-                                data :[{{ res.0|join:", " }}]
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value'
-                            }
-                        ],
-                        series : [
-                            {
-                                name:'数据缺损',
-                                type:'line',
-                                stack: '总量',
-                                label: {
-                                    normal: {
-                                        show: true,
-                                        position: 'top'
+                            // 指定图表的配置项和数据
+                            option = {
+                                title: {
+                                    text: 'NCP_{{ test_case }}'
+                                },
+                                tooltip : {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data:['NCP']
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
                                     }
                                 },
-                                areaStyle: {normal: {}},
-                                data:[{{ res.1|join:", " }}]
-                            }
-                        ]
-                    };
-                    // 使用刚指定的配置项和数据显示图表。
-                    myChart.setOption(option);
-                </script>
-                <div id="Time_{{ test_case }}" style="width: 600px;height:400px;display: inline-block;"></div>
-                <script type="text/javascript">
-                    // 基于准备好的dom，初始化echarts实例
-                    var myChart = echarts.init(document.getElementById('Time_{{ test_case }}'));
+                                grid: {
+                                    left: '3%',
+                                    right: '8%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                xAxis : [
+                                    {
+                                        name : '{{ test_case }}',
+                                        type : 'category',
+                                        boundaryGap : false,
+                                        data :[{{ res.0|join:", " }}]
+                                    }
+                                ],
+                                yAxis : [
+                                    {
+                                        type : 'value'
+                                    }
+                                ],
+                                series : [
+                                    {
+                                        name:'数据缺损',
+                                        type:'line',
+                                        stack: '总量',
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: 'top'
+                                            }
+                                        },
+                                        areaStyle: {normal: {}},
+                                        data:[{{ res.1|join:", " }}]
+                                    }
+                                ]
+                            };
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+                        </script>
+                        <div id="Time_{{ test_case }}" style="width: 600px;height:400px;display: inline-block;"></div>
+                        <script type="text/javascript">
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('Time_{{ test_case }}'));
 
-                    // 指定图表的配置项和数据
-                    option = {
-                        title: {
-                            text: 'Time_{{ test_case }}'
-                        },
-                        tooltip : {
-                            trigger: 'axis'
-                        },
-                        legend: {
-                            data:['NCP']
-                        },
-                        toolbox: {
-                            feature: {
-                                saveAsImage: {}
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '8%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis : [
-                            {
-                                name : '{{ test_case }}',
-                                type : 'category',
-                                boundaryGap : false,
-                                data :[{{ res.0|join:", " }}]
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value'
-                            }
-                        ],
-                        series : [
-                            {
-                                name:'运行时间',
-                                type:'line',
-                                stack: '总量',
-                                label: {
-                                    normal: {
-                                        show: true,
-                                        position: 'top'
+                            // 指定图表的配置项和数据
+                            option = {
+                                title: {
+                                    text: 'Time_{{ test_case }}'
+                                },
+                                tooltip : {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data:['NCP']
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
                                     }
                                 },
-                                areaStyle: {normal: {}},
-                                data:[{{ res.2|join:", " }}]
-                            }
-                        ]
-                    };
-                    // 使用刚指定的配置项和数据显示图表。
-                    myChart.setOption(option);
-                </script>
+                                grid: {
+                                    left: '3%',
+                                    right: '8%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                xAxis : [
+                                    {
+                                        name : '{{ test_case }}',
+                                        type : 'category',
+                                        boundaryGap : false,
+                                        data :[{{ res.0|join:", " }}]
+                                    }
+                                ],
+                                yAxis : [
+                                    {
+                                        type : 'value'
+                                    }
+                                ],
+                                series : [
+                                    {
+                                        name:'运行时间',
+                                        type:'line',
+                                        stack: '总量',
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: 'top'
+                                            }
+                                        },
+                                        areaStyle: {normal: {}},
+                                        data:[{{ res.2|join:", " }}]
+                                    }
+                                ]
+                            };
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+                        </script>
+                    {% else %}
+                        <div id="NCP_{{ test_case }}" style="width:600px;height:400px;display: inline-block;"></div>
+                        <script type="text/javascript">
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('NCP_{{ test_case }}'));
+
+                            // 指定图表的配置项和数据
+                            option = {
+                                title: {
+                                    text: 'NCP_{{ test_case }}'
+                                },
+                                tooltip : {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data:['NCP']
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
+                                    }
+                                },
+                                grid: {
+                                    left: '3%',
+                                    right: '8%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                xAxis : [
+                                    {
+                                        name : '{{ test_case }}',
+                                        type : 'category',
+                                        boundaryGap : false,
+                                        data :[{{ res.0|join:", " }}]
+                                    }
+                                ],
+                                yAxis : [
+                                    {
+                                        type : 'value'
+                                    }
+                                ],
+                                series : [
+                                    {
+                                        name:'数据缺损',
+                                        type:'line',
+                                        stack: '总量',
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: 'top'
+                                            }
+                                        },
+                                        areaStyle: {normal: {}},
+                                        data:[{{ res.1|join:", " }}]
+                                    }
+                                ]
+                            };
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+                        </script>
+                        <div id="TNCP_{{ test_case }}" style="width:600px;height:400px;display: inline-block;"></div>
+                        <script type="text/javascript">
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('TNCP_{{ test_case }}'));
+
+                            // 指定图表的配置项和数据
+                            option = {
+                                title: {
+                                    text: 'TNCP_{{ test_case }}'
+                                },
+                                tooltip : {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data:['NCP']
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
+                                    }
+                                },
+                                grid: {
+                                    left: '3%',
+                                    right: '8%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                xAxis : [
+                                    {
+                                        name : '{{ test_case }}',
+                                        type : 'category',
+                                        boundaryGap : false,
+                                        data :[{{ res.0|join:", " }}]
+                                    }
+                                ],
+                                yAxis : [
+                                    {
+                                        type : 'value'
+                                    }
+                                ],
+                                series : [
+                                    {
+                                        name:'数据缺损',
+                                        type:'line',
+                                        stack: '总量',
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: 'top'
+                                            }
+                                        },
+                                        areaStyle: {normal: {}},
+                                        data:[{{ res.2|join:", " }}]
+                                    }
+                                ]
+                            };
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+                        </script>
+                        <div id="Time_{{ test_case }}" style="width: 600px;height:400px;display: inline-block;"></div>
+                        <script type="text/javascript">
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('Time_{{ test_case }}'));
+
+                            // 指定图表的配置项和数据
+                            option = {
+                                title: {
+                                    text: 'Time_{{ test_case }}'
+                                },
+                                tooltip : {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data:['NCP']
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
+                                    }
+                                },
+                                grid: {
+                                    left: '3%',
+                                    right: '8%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                xAxis : [
+                                    {
+                                        name : '{{ test_case }}',
+                                        type : 'category',
+                                        boundaryGap : false,
+                                        data :[{{ res.0|join:", " }}]
+                                    }
+                                ],
+                                yAxis : [
+                                    {
+                                        type : 'value'
+                                    }
+                                ],
+                                series : [
+                                    {
+                                        name:'运行时间',
+                                        type:'line',
+                                        stack: '总量',
+                                        label: {
+                                            normal: {
+                                                show: true,
+                                                position: 'top'
+                                            }
+                                        },
+                                        areaStyle: {normal: {}},
+                                        data:[{{ res.3|join:", " }}]
+                                    }
+                                ]
+                            };
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+                        </script>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
