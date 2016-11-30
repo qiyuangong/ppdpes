@@ -39,8 +39,8 @@ class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)
     task_cat = forms.ChoiceField(label='选择数据类型', choices=TASK_CAT)
     sa_index = forms.IntegerField(initial=-1)
-    qid_index = forms.CharField(max_length=200)
-    is_cat = forms.CharField(max_length=50)
+    qid_index = forms.CharField(max_length=800)
+    is_cat = forms.CharField(max_length=800)
     file_content = forms.FileField()
 
     def is_valid(self):
