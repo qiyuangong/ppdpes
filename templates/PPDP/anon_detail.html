@@ -11,6 +11,9 @@
                 <h2>Model: {{anon_result.anon_model.model_text}}</h2>
                 <h2>Algorithm: {{anon_result.anon_algorithm.algorithm_text}}</h2>
                 <h2>NCP: {{ parameters.ncp }}%</h2>
+		{% if parameters.tncp %}
+                    <h2>TNCP: {{ parameters.tncp }}%</h2>
+                {% endif %}
                 <h2>Running Time: {{ parameters.time }} seconds</h2>
                 <a href={{ parameters.url }}>Download Anon_Data File</a>
             </div>

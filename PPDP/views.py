@@ -19,7 +19,7 @@ def task_update(request):
     if anon_task.task_type == 0:
         anon_id = anon_task.result_set
         anon_result = get_object_or_404(Anon_Result, pk=anon_id)
-        anon_result.anon_result = r_result
+        anon_result.anon_result = json.loads(r_result)
         anon_result.end_time = anon_task.end_time
         anon_result.save()
     else:

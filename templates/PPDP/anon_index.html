@@ -16,7 +16,6 @@
                                 <th>Model</th>
                                 <th>Algorithm</th>
                                 <th>Start Time</th>
-                                <th>NCP</th>
                                 <th>Running Time</th>
                             </tr>
                         </thead>
@@ -28,11 +27,9 @@
                                     <td>{{ anon_reslut.anon_model.model_text }}</td>
                                     <td>{{ anon_reslut.anon_algorithm.algorithm_text }}</td>
                                     <td>{{ anon_reslut.start_time }}</td>
-                                    {% if anon_reslut.is_finished %}
-                                        <td>{{ anon_reslut.parameters.ncp }}</td>
-                                        <td>{{ anon_reslut.parameters.time }}</td>
+                                    {% if anon_reslut.is_finished%}
+                                        <td>{{ anon_reslut.anon_result.time }}</td>
                                     {% else %}
-                                        <td>--</td>
                                         <td>--</td>
                                     {% endif %}
                                 </tr>

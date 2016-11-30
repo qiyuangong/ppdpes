@@ -11,7 +11,7 @@
                 <h2>Algorithm: {{ task.anon_algorithm.algorithm_text }}</h2>
                 <h2>Parameters: {{ task.parameters }}</h2>
                 {% if task.is_finished%}
-                    <p>Finished</p>
+                    <h2>Task Finished</h2>
                     {% if task.task_type > 0 %}
                         <li><a href="/PPDP/eval{{ task.result_set }}">Eval_Result</a></li>
                     {% else %}
