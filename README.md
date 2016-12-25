@@ -11,7 +11,7 @@ start server:
 
 2) worker:
 
-    celery -A ppdpes worker --loglevel=info
+    celery -A tasks worker --loglevel=info
 
 3) anon JSON
 
